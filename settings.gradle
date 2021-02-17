@@ -1,5 +1,6 @@
 include ':lib_wconnector'
+//include ':lib_launcher'
+//include ':lib_launcher3'
 include ':lib_widget'
-include ':lib_launcher3'
 include ':demo'
 rootProject.name = "JuWidget"
