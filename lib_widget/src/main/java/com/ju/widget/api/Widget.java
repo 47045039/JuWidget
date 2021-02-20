@@ -9,6 +9,8 @@ import com.ju.widget.util.Tools;
 import java.util.ArrayList;
 import java.util.Objects;
 
+import static com.ju.widget.api.Constants.ORIENTATION_MASK;
+
 /**
  * Widget
  *
@@ -23,24 +25,45 @@ public abstract class Widget<D extends Data, V extends WidgetView> {
 
     private final String mID;                   // Widget ID，保持全局唯一
     private final Point mCellSpan;              // 跨度span
+    private final int mOrientation;             // 默认支持横向 + 纵向
     private final int mUpdateInterval;          // 数据更新时间间隔，ms
+
     private Data mData;                         // 关联数据
 
     private ICommonCallback<D> mUpdateCallback; // 数据刷新的回调接口
     private boolean mUpdating;                  // 是否正在刷新数据
     private long mUpdateTimeStamp;              // 数据更新时戳，ms
 
-    public Widget(String id, int interval) {
-        this(id, 1, 1, interval);
+    public Widget(String id) {
+        this(id, 1, 1, ORIENTATION_MASK, -1);
+    }
+
+    public Widget(String id, int orientation) {
+        this(id, 1, 1, orientation, -1);
+    }
+
+    public Widget(String id, int orientation, int interval) {
+        this(id, 1, 1, orientation, interval);
     }
 
     public Widget(String id, int spanX, int spanY, int interval) {
+        this(id, spanX, spanY, ORIENTATION_MASK, interval);
+    }
+
+    public Widget(String id, int spanX, int spanY, int orientation, int interval) {
         mID = id;
 
         if (spanX > 0 && spanY > 0) {
             mCellSpan = new Point(spanX, spanY);
         } else {
             mCellSpan = new Point(1, 1);
+        }
+
+        int orient = orientation & ORIENTATION_MASK;
+        if (orient == 0) {
+            mOrientation = ORIENTATION_MASK;
+        } else {
+            mOrientation = orientation;
         }
 
         if (interval > 0 && interval < MIN_UPDATE_INTERVAL) {
@@ -56,6 +79,44 @@ public abstract class Widget<D extends Data, V extends WidgetView> {
 
     public Point getCellSpan() {
         return new Point(mCellSpan);
+    }
+
+    public boolean supportHorizontalScreen() {
+        return Tools.isHorizontal(mOrientation);
+    }
+
+    public boolean supportVerticalScreen() {
+        return Tools.isVertical(mOrientation);
+    }
+
+    public boolean isMatch(Query query) {
+        if (query == null) {
+            return true;
+        }
+
+        int span = query.mMaxSpanX;
+        // 查询的最大跨度 < 当前widget跨度
+        if (span > 0 && span < mCellSpan.x) {
+            return false;
+        }
+
+        span = query.mBestSpanX;
+        // 查询的最佳跨度 != 当前widget跨度
+        if (span > 0 && span != mCellSpan.x) {
+            return false;
+        }
+
+        // 查询横屏widget，但当前widget不支持横屏
+        if (Tools.isHorizontal(query.mOrietention) && !supportHorizontalScreen()) {
+            return false;
+        }
+
+        // 查询竖屏widget，但当前widget不支持竖屏
+        if (Tools.isVertical(query.mOrietention) && !supportVerticalScreen()) {
+            return false;
+        }
+
+        return true;
     }
 
     @Override
@@ -188,6 +249,5 @@ public abstract class Widget<D extends Data, V extends WidgetView> {
      * @return
      */
     protected abstract boolean doUpdate(Context context, ICommonCallback callback);
-
 
 }

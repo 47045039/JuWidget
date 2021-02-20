@@ -1,7 +1,6 @@
 package com.ju.widget.interfaces;
 
-import android.graphics.Point;
-
+import com.ju.widget.api.Query;
 import com.ju.widget.api.Widget;
 
 import java.util.ArrayList;
@@ -27,12 +26,11 @@ public interface IWidgetManager {
     void setCallback(IWidgetCallback callback);
 
     /**
-     * 获取推荐的Widget信息
+     * 获取Widget信息
      *
-     * @param maxSpan
-     * @param bestSpan
+     * @param query
      * @return
      */
-    ArrayList<Widget> getRecommendWidget(Point maxSpan, Point bestSpan);
+    ArrayList<Widget> queryWidget(Query query);
 
 }
