@@ -17,7 +17,7 @@ import static com.ju.widget.api.Constants.ORIENTATION_MASK;
  * @param <D> Widget数据
  * @param <V> Widget界面
  */
-public abstract class Widget<D extends Data, V extends WidgetView> {
+public abstract class Widget<D extends WidgetData, V extends WidgetView> {
 
     private static final int MIN_UPDATE_INTERVAL = 30 * 60 * 1000;  // 最小刷新间隔，30min
 
@@ -28,7 +28,7 @@ public abstract class Widget<D extends Data, V extends WidgetView> {
     private final int mOrientation;             // 默认支持横向 + 纵向
     private final int mUpdateInterval;          // 数据更新时间间隔，ms
 
-    private Data mData;                         // 关联数据
+    private WidgetData mData;                   // 关联数据
 
     private ICommonCallback<D> mUpdateCallback; // 数据刷新的回调接口
     private boolean mUpdating;                  // 是否正在刷新数据

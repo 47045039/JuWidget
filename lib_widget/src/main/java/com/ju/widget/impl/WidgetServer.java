@@ -1,8 +1,9 @@
-package com.ju.widget.api;
+package com.ju.widget.impl;
 
-import android.os.HandlerThread;
 import android.text.TextUtils;
 
+import com.ju.widget.api.Product;
+import com.ju.widget.api.Widget;
 import com.ju.widget.interfaces.IWidgetCallback;
 import com.ju.widget.interfaces.IWidgetManager;
 import com.ju.widget.util.Log;
@@ -15,12 +16,6 @@ public class WidgetServer {
 
     private static final String TAG = "WidgetServer";
 
-    private static final HandlerThread sWorker = new HandlerThread("WidgetServer");
-
-    static {
-        sWorker.start();
-    }
-
     private static final WidgetCallback sWidgetInfoCallback = new WidgetCallback();
     private static final HashMap<Product, IWidgetManager> sProducts = new HashMap<>();
     private static final HashMap<Product, ArrayList<Widget>> sWidgets = new HashMap<>();
@@ -31,7 +26,7 @@ public class WidgetServer {
      * @param product 产品分类信息
      * @return
      */
-    public static final boolean registerProduct(final Product product, final IWidgetManager manager) {
+    static final boolean registerProduct(final Product product, final IWidgetManager manager) {
         if (product == null || manager == null) {
             Log.e(TAG, "registerProduct with invalid args: ", product, manager);
             return false;

@@ -9,10 +9,16 @@ public class Product implements Comparable<Product> {
 
     public final int mID;
     public final String mTitle;
+    public final String mDescription;
 
     public Product(int id, String title) {
+        this(id, title, null);
+    }
+
+    public Product(int id, String title, String description) {
         mID = id;
-        mTitle = title == null ? "UnknownProduct" : title;
+        mTitle = (title == null ? "UnknownProduct" : title);
+        mDescription = (description == null ? "UnknownDescription" : description);
     }
 
     @Override
@@ -25,7 +31,7 @@ public class Product implements Comparable<Product> {
         }
 
         final Product product = (Product) o;
-        return Objects.equals(mTitle, product.mTitle);
+        return mID == product.mID;
     }
 
     @Override
@@ -36,7 +42,9 @@ public class Product implements Comparable<Product> {
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("Product{");
-        sb.append("mTitle='").append(mTitle).append('\'');
+        sb.append("mID=").append(mID);
+        sb.append(", mTitle='").append(mTitle).append('\'');
+        sb.append(", mDescription='").append(mDescription).append('\'');
         sb.append('}');
         return sb.toString();
     }

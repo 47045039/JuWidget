@@ -5,7 +5,7 @@ import android.graphics.Point;
 import android.util.AttributeSet;
 import android.widget.FrameLayout;
 
-public abstract class WidgetView<D extends Data> extends FrameLayout {
+public abstract class WidgetView<D extends WidgetData> extends FrameLayout {
 
     private final Point mPosition = new Point(-1, -1);
     private final Point mSpan = new Point(-1, -1);
