@@ -1,0 +1,64 @@
+/*
+ *   Copyright (C) 2015. Kumaresan Rajeswaran
+ *
+ *   Licensed under the Apache License, Version 2.0 (the "License");
+ *   you may not use this file except in compliance with the License.
+ *   You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *   Unless required by applicable law or agreed to in writing, software
+ *   distributed under the License is distributed on an "AS IS" BASIS,
+ *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *   See the License for the specific language governing permissions and
+ *   limitations under the License.
+ *
+ */
+
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 28
+    buildToolsVersion "28.0.2"
+
+    defaultConfig {
+        minSdkVersion 16
+        targetSdkVersion 28
+        versionCode System.getenv("BUILD_NUMBER") as Integer ?: 99999 // so you don't have to uninstall for dev builds
+        versionName "1.0" + '.' + versionCode
+    }
+
+    lintOptions {
+        checkReleaseBuilds false
+        // Or, if you prefer, you can continue to check for errors in release builds,
+        // but continue the build even when errors are found:
+        abortOnError false
+    }
+
+    signingConfigs {
+        release {
+//            storeFile file("release.keystore")
+//            keyAlias "ReleaseKey"
+//            ant.input(message: 'Enter keystore password:', addproperty: 'keystorePassword', defaultValue : '')
+//            storePassword ant.properties.keystorePassword
+//            ant.input(message: 'Enter key password:', addproperty: 'keyPassword', defaultValue : '')
+//            keyPassword ant.properties.keyPassword
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            shrinkResources true
+            debuggable false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard.cfg'
+            signingConfig signingConfigs.release
+            zipAlignEnabled true
+        }
+    }
+}
+
+dependencies {
+    compile 'com.android.support:support-v13:24.1.1'
+}
+
