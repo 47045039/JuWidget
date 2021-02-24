@@ -38,23 +38,29 @@ public class WidgetLoader {
     }
 
     private static final void loadWidgetManager(Context context) {
-        Product product = new Product(0, "教育", "教育Description");
-        String manager = "com.ju.widget.edu.EduWidgetManager";
-        WidgetServer.registerProduct(product, new WidgetManagerProxy(context.getClassLoader(), manager));
+        Product edu = new Product("1", "教育", "教育Description");
+        String eduManager = "com.ju.widget.edu.EduWidgetManager";
+        WidgetServer.registerProduct(edu, new WidgetManagerProxy(context.getClassLoader(), eduManager));
 
-        product = new Product(0, "视频", "视频Description");
-        manager = "com.ju.widget.vod.VodWidgetManager";
-        WidgetServer.registerProduct(product, new WidgetManagerProxy(context.getClassLoader(), manager));
+        Product vod = new Product("2", "视频", "视频Description");
+        String vodManager = "com.ju.widget.vod.VodWidgetManager";
+        WidgetServer.registerProduct(vod, new WidgetManagerProxy(context.getClassLoader(), vodManager));
     }
 
     private static final void readAllWidget(Context context) {
         // TODO：从数据库中读取所有缓存的widget信息
-        Product product = new Product(0, "教育", "教育Description");
-        ArrayList<Widget> list = new ArrayList<>(2);
-        list.add(new CachedWidget("CachedWidget_1", 1, 1));
-        list.add(new CachedWidget("CachedWidget_2", 1, 2));
+        Product edu = new Product("1", "教育", "教育Description");
+        ArrayList<Widget> eduList = new ArrayList<>(2);
+        eduList.add(new CachedWidget("CachedWidget_1", "1", 1, 1));
+        eduList.add(new CachedWidget("CachedWidget_2", "1", 1, 2));
 
-        WidgetServer.registerWidget(product, list);
+        Product vod = new Product("2", "视频", "视频Description");
+        ArrayList<Widget> vodList = new ArrayList<>(2);
+        vodList.add(new CachedWidget("CachedWidget_VOD_1", "2", 1, 1));
+        vodList.add(new CachedWidget("CachedWidget_VOD_2", "2", 1, 2));
+
+        WidgetServer.registerWidget(edu, eduList);
+        WidgetServer.registerWidget(vod, vodList);
     }
 
     private static final void readAllWidgetData(Context context) {

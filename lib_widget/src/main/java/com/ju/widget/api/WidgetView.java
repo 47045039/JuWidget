@@ -1,15 +1,12 @@
 package com.ju.widget.api;
 
 import android.content.Context;
-import android.graphics.Point;
 import android.util.AttributeSet;
 import android.widget.FrameLayout;
 
 public abstract class WidgetView<D extends WidgetData> extends FrameLayout {
 
-    private final Point mPosition = new Point(-1, -1);
-    private final Point mSpan = new Point(-1, -1);
-    private D mData;
+    protected D mWidgetData;
 
     public WidgetView(Context context) {
         super(context);
@@ -27,30 +24,19 @@ public abstract class WidgetView<D extends WidgetData> extends FrameLayout {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
 
-    boolean setPosition(int x, int y) {
-        final Point pos = mPosition;
-        if (pos.x == x && pos.y == y) {
-            return false;
-        } else {
-            pos.set(x, y);
-            return true;
-        }
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
     }
 
-    boolean setSpan(int x, int y) {
-        final Point span = mSpan;
-        if (span.x == x && span.y == y) {
-            return false;
-        } else {
-            span.set(x, y);
-            return true;
-        }
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
     }
 
-    boolean setData(D data) {
-        mData = data;
+    void setWidgetData(D data) {
+        mWidgetData = data;
         onDataChanged(data);
-        return true;
     }
 
     /**

@@ -1,6 +1,6 @@
 package com.ju.widget.api;
 
-import static com.ju.widget.api.Widget.ORIENTATION_H;
+import static com.ju.widget.api.Constants.ORIENTATION_H;
 
 /**
  * @Author: liuqunshan@hisense.com

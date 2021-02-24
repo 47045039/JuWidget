@@ -1,9 +1,6 @@
 package com.ju.widget.impl.cache;
 
-import android.content.Context;
-
 import com.ju.widget.api.Widget;
-import com.ju.widget.interfaces.ICommonCallback;
 
 /**
  * @Author: liuqunshan@hisense.com
@@ -12,24 +9,19 @@ import com.ju.widget.interfaces.ICommonCallback;
  */
 public class CachedWidget extends Widget<CachedWidgetData, CachedWidgetView> {
 
-    public CachedWidget(String id) {
-        super(id);
+    public CachedWidget(String id, String pid) {
+        super(id, pid);
     }
 
-    public CachedWidget(String id, int orientation) {
-        super(id, orientation);
+    public CachedWidget(String id, String pid, int orientation) {
+        super(id, pid, orientation);
     }
 
-    public CachedWidget(String id, int spanX, int spanY) {
-        super(id, spanX, spanY, -1);
+    public CachedWidget(String id, String pid, int spanX, int spanY) {
+        super(id, pid, spanX, spanY, -1);
     }
 
-    public CachedWidget(String id, int spanX, int spanY, int orientation) {
-        super(id, spanX, spanY, orientation, -1);
-    }
-
-    @Override
-    protected boolean doUpdate(Context context, ICommonCallback callback) {
-        return false;
+    public CachedWidget(String id, String pid, int spanX, int spanY, int orientation) {
+        super(id, pid, spanX, spanY, orientation, -1);
     }
 }

@@ -1,7 +1,12 @@
 package com.ju.widget.impl;
 
+import android.content.Context;
+
 import com.ju.widget.api.Query;
 import com.ju.widget.api.Widget;
+import com.ju.widget.api.WidgetView;
+import com.ju.widget.impl.cache.CachedWidget;
+import com.ju.widget.impl.cache.CachedWidgetView;
 import com.ju.widget.interfaces.IWidgetCallback;
 import com.ju.widget.interfaces.IWidgetManager;
 
@@ -57,6 +62,20 @@ public class WidgetManagerProxy implements IWidgetManager {
         } else {
             // TODO: enable前先使用缓存数据
             return null;
+        }
+    }
+
+    @Override
+    public WidgetView createWidgetView(Context context, Widget widget) {
+        if (mImpl != null) {
+            return mImpl.createWidgetView(context, widget);
+        } else {
+            // TODO: enable前先使用缓存数据
+            if (widget instanceof CachedWidget) {
+                return new CachedWidgetView(context);
+            } else {
+                return null;
+            }
         }
     }
 

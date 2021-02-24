@@ -1,5 +1,7 @@
 package com.ju.widget.api;
 
+import android.text.TextUtils;
+
 import java.util.Objects;
 
 /**
@@ -7,15 +9,19 @@ import java.util.Objects;
  */
 public class Product implements Comparable<Product> {
 
-    public final int mID;
+    public final String mID;
     public final String mTitle;
     public final String mDescription;
 
-    public Product(int id, String title) {
+    public Product(String id, String title) {
         this(id, title, null);
     }
 
-    public Product(int id, String title, String description) {
+    public Product(String id, String title, String description) {
+        if (TextUtils.isEmpty(id)) {
+            throw new IllegalArgumentException("Product ID must not empty.");
+        }
+
         mID = id;
         mTitle = (title == null ? "UnknownProduct" : title);
         mDescription = (description == null ? "UnknownDescription" : description);

@@ -1,7 +1,10 @@
 package com.ju.widget.interfaces;
 
+import android.content.Context;
+
 import com.ju.widget.api.Query;
 import com.ju.widget.api.Widget;
+import com.ju.widget.api.WidgetView;
 
 import java.util.ArrayList;
 
@@ -32,5 +35,14 @@ public interface IWidgetManager {
      * @return
      */
     ArrayList<Widget> queryWidget(Query query);
+
+    /**
+     * 创建该Widget对应的View
+     *
+     * @param context
+     * @param widget
+     * @return
+     */
+    WidgetView createWidgetView(Context context, Widget widget);
 
 }

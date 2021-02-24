@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import com.ju.widget.api.Product;
 import com.ju.widget.api.Widget;
+import com.ju.widget.api.WidgetView;
 import com.ju.widget.interfaces.IWidgetCallback;
 import com.ju.widget.interfaces.IWidgetManager;
 import com.ju.widget.util.Log;
@@ -11,6 +12,7 @@ import com.ju.widget.util.Tools;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public class WidgetServer {
 
@@ -19,6 +21,7 @@ public class WidgetServer {
     private static final WidgetCallback sWidgetInfoCallback = new WidgetCallback();
     private static final HashMap<Product, IWidgetManager> sProducts = new HashMap<>();
     private static final HashMap<Product, ArrayList<Widget>> sWidgets = new HashMap<>();
+    private static final HashMap<Widget, ArrayList<WidgetView>> sViews = new HashMap<>();
 
     /**
      * 注册产品分类信息
@@ -237,6 +240,110 @@ public class WidgetServer {
 
         // TODO: 通知到WidgetContainer，刷新Widget无效状态
         return true;
+    }
+
+    /**
+     * 记录Widget和WidgetView的绑定关系
+     *
+     * @param widget
+     * @param view
+     * @return
+     */
+    public static final boolean attachWidgetView(Widget widget, WidgetView view) {
+        Log.i(TAG, "attachWidgetView: ", widget, view);
+
+        ArrayList<WidgetView> views = sViews.get(widget);
+        if (views == null) {
+            views = new ArrayList<>(1);
+            views.add(view);
+            sViews.put(widget, views);
+            return true;
+        }
+
+        if (views.contains(view)) {
+            return true;
+        } else {
+            sViews.put(widget, views);
+            return true;
+        }
+    }
+
+    /**
+     * 记录Widget和WidgetView的绑定关系
+     *
+     * @param widget
+     * @param view
+     * @return
+     */
+    public static final boolean detachWidgetView(Widget widget, WidgetView view) {
+        Log.i(TAG, "detachWidgetView: ", widget, view);
+
+        final ArrayList<WidgetView> views = sViews.get(widget);
+        if (views == null || !views.contains(view)) {
+            Log.w(TAG, "detachWidgetView failed: ", widget, view);
+            return true;
+        }
+
+        views.remove(view);
+        return true;
+    }
+
+    /**
+     * 根据id查询Product信息
+     *
+     * @param id
+     * @return
+     */
+    public static final IWidgetManager findWidgetManager(String id) {
+        if (id == null || TextUtils.isEmpty(id)) {
+            Log.e(TAG, "findWidgetManager invalid args: ", id);
+            return null;
+        }
+
+        if (!Tools.isMainThread()) {
+            Log.e(TAG, "findWidgetManager in invalid thread: ", id);
+            return null;
+        }
+
+        String tempID = null;
+        for (Map.Entry<Product, IWidgetManager> entry : sProducts.entrySet()) {
+            tempID = entry.getKey().mID;
+            if (TextUtils.equals(tempID, id)) {
+                Log.d(TAG, "findWidgetManager: ", id, entry.getValue());
+                return entry.getValue();
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * 根据id查询Product信息
+     *
+     * @param id
+     * @return
+     */
+    public static final Product findProduct(String id) {
+        if (id == null || TextUtils.isEmpty(id)) {
+            Log.e(TAG, "findProduct invalid args: ", id);
+            return null;
+        }
+
+        if (!Tools.isMainThread()) {
+            Log.e(TAG, "findProduct in invalid thread: ", id);
+            return null;
+        }
+
+        String tempID = null;
+        for (Product product : sProducts.keySet()) {
+            tempID = product.mID;
+            if (TextUtils.equals(tempID, id)) {
+                Log.d(TAG, "findProduct: ", id, product);
+                return product;
+            }
+        }
+
+        return null;
     }
 
     /**
