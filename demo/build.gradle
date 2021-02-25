@@ -27,12 +27,11 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 }
-repositories {
-    flatDir { dirs 'C:\\Users\\xuaonan\\Downloads\\JuWidget-git\\lib_widget_times\\build\\outputs\\aar' }
-}
+
 dependencies {
-    compile(name:'lib_widget_times-debug', ext:'aar')
     implementation project(path: ':lib_widget')
+    implementation project(path: ':lib_widget_common')
+    implementation project(path: ':lib_widget_plugin')
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'com.google.android.material:material:1.1.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'

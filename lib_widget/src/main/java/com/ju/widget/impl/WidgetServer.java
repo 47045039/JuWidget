@@ -1,7 +1,14 @@
 package com.ju.widget.impl;
 
+import android.content.Context;
 import android.text.TextUtils;
+import android.view.View;
+import android.view.ViewGroup;
 
+import androidx.appcompat.view.menu.MenuBuilder;
+
+import com.ju.widget.IWidgetServer;
+import com.ju.widget.IWidgetView;
 import com.ju.widget.api.Product;
 import com.ju.widget.api.Widget;
 import com.ju.widget.api.WidgetView;
@@ -12,9 +19,10 @@ import com.ju.widget.util.Tools;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-public class WidgetServer {
+public class WidgetServer implements IWidgetServer {
 
     private static final String TAG = "WidgetServer";
 
@@ -22,6 +30,14 @@ public class WidgetServer {
     private static final HashMap<Product, IWidgetManager> sProducts = new HashMap<>();
     private static final HashMap<Product, ArrayList<Widget>> sWidgets = new HashMap<>();
     private static final HashMap<Widget, ArrayList<WidgetView>> sViews = new HashMap<>();
+    private static WidgetServer sInstance;
+    private Context context;
+    private List<IWidgetView> mShownWidgetList;
+    private List<IWidgetView> mIWidgetViewList;
+
+    public WidgetServer(Context context) {
+        this.context = context;
+    }
 
     /**
      * 注册产品分类信息
@@ -377,6 +393,36 @@ public class WidgetServer {
         }
 
         return null;
+    }
+
+    public static IWidgetServer getInstance(Context context) {
+        if(sInstance==null){
+            synchronized (WidgetServer.class){
+                if(sInstance==null){
+                    sInstance = new WidgetServer(context);
+                    return sInstance;
+                }
+            }
+        }
+        return sInstance;
+    }
+
+    @Override
+    public void register(List<IWidgetView> iWidgetViewList) {
+        mIWidgetViewList.addAll(iWidgetViewList);
+    }
+
+    @Override
+    public void show(ViewGroup parent) {
+        for(IWidgetView iWidgetView: mIWidgetViewList) {
+            View view = iWidgetView.createView();
+            parent.addView(view);
+        }
+    }
+
+    @Override
+    public List<IWidgetView> getShownWidgetList() {
+        return mShownWidgetList;
     }
 
     static final class WidgetCallback implements IWidgetCallback {

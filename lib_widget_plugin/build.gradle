@@ -35,11 +35,12 @@ android {
         }
     }
 }
-
+repositories {
+    flatDir { dirs '.\\..\\lib_widget_times\\build\\outputs\\aar' }
+}
 dependencies {
     implementation project(path: ':lib_widget_common')
-    implementation project(path: ':lib_widget')
-    implementation 'com.google.code.gson:gson:2.8.5'
+    compile(name:'lib_widget_times-debug', ext:'aar')
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'com.google.android.material:material:1.1.0'
     testImplementation 'junit:junit:4.+'

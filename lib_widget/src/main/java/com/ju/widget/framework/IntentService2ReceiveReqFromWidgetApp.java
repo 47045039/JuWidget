@@ -6,7 +6,12 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.google.gson.Gson;
+import com.ju.widget.IWidgetServer;
+import com.ju.widget.IWidgetView;
 import com.ju.widget.ReqFromAppBase;
+import com.ju.widget.impl.WidgetServer;
+
+import java.util.List;
 
 /**
  * An {@link IntentService} subclass for handling asynchronous task requests in
@@ -24,6 +29,8 @@ public class IntentService2ReceiveReqFromWidgetApp extends IntentService {
     private static final String EXTRA_REQ_PARAM = "com.ju.widget.framework.extra.request.PARAM";
     private static final String EXTRA_PARAM1 = "com.ju.widget.demo.extra.PARAM1";
     private static final String EXTRA_PARAM2 = "com.ju.widget.demo.extra.PARAM2";
+    private IWidgetServer iWidgetServer;
+    private ReqFromAppBase reqFromAppBase;
 
     public IntentService2ReceiveReqFromWidgetApp() {
         super("IntentService2ReceiveReqFromWidgetAar");
@@ -83,7 +90,7 @@ public class IntentService2ReceiveReqFromWidgetApp extends IntentService {
             return;
         /*获取app传递过来的请求，解析请求*/
         String stringExtra = intent.getStringExtra(EXTRA_REQ_PARAM);
-        ReqFromAppBase reqFromAppBase = new Gson().fromJson(stringExtra, ReqFromAppBase.class);
+        reqFromAppBase = new Gson().fromJson(stringExtra, ReqFromAppBase.class);
         updateWidgetView(reqFromAppBase, stringExtra);
     }
 
@@ -91,8 +98,13 @@ public class IntentService2ReceiveReqFromWidgetApp extends IntentService {
         /**/
         String pkgName = reqFromAppBase.widgetAppPkgName;
         String widgetId = reqFromAppBase.widgetId;
-        if(true){
-            handleTimesWidgetView(stringExtra);
+        if (iWidgetServer==null) {
+            iWidgetServer = WidgetServer.getInstance(getApplicationContext());
+        }
+        List<IWidgetView> shownWidgetList = iWidgetServer.getShownWidgetList();
+        for (IWidgetView iWidgetView: shownWidgetList){
+            if(iWidgetView.getPkgName().equals(pkgName)&&iWidgetView.getWidgetId().equals(widgetId))
+                iWidgetView.update(stringExtra);
         }
     }
 

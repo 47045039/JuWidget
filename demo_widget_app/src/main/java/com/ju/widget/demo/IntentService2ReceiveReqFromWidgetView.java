@@ -36,6 +36,10 @@ public class IntentService2ReceiveReqFromWidgetView extends IntentService {
     public static final String FRAMEWORK_PKG = "com.ju.widget.framework";
     public static final String FRAMEWORK_SERVICE = "com.ju.widget.framework.IntentService2ReceiveReqFromWidgetApp";
     private ComponentName component = new ComponentName(FRAMEWORK_PKG, FRAMEWORK_SERVICE);
+    private ReqFromWidgetView reqFromWidgetView;
+    private ActionFromTimesWidgetView actionFromTimesWidgetView;
+    private ReqFromWidgetTimesApp reqFromWidgetTimesApp;
+    private ActionFromTimesWidgetApp actionFromTimesWidgetApp;
 
     public IntentService2ReceiveReqFromWidgetView() {
         super("IntentService2ReceiveReqFromWidgetView");
@@ -97,11 +101,11 @@ public class IntentService2ReceiveReqFromWidgetView extends IntentService {
         String stringExtra = intent.getStringExtra(EXTRA_REQ_PARAM);
         if(TextUtils.isEmpty(stringExtra))
             return;
-        ReqFromWidgetView extra = new Gson().fromJson(stringExtra, ReqFromWidgetView.class);
-        if (Constant.WIDGET_TIMES.equals(extra.widgetId)) {
-            ActionFromTimesWidgetView action = extra.action;
-            if(action instanceof ActionFromTimesWidgetView){
-                handle(extra.widgetId, action);
+        reqFromWidgetView = new Gson().fromJson(stringExtra, ReqFromWidgetView.class);
+        if (Constant.WIDGET_TIMES.equals(reqFromWidgetView.widgetId)) {
+            actionFromTimesWidgetView = reqFromWidgetView.action;
+            if(actionFromTimesWidgetView instanceof ActionFromTimesWidgetView){
+                handle(reqFromWidgetView.widgetId, actionFromTimesWidgetView);
             }
         }
     }
@@ -116,12 +120,12 @@ public class IntentService2ReceiveReqFromWidgetView extends IntentService {
     private void updateTime2framework(String widgetId) {
         Intent intent = new Intent();
         intent.setComponent(component);
-        ReqFromWidgetTimesApp reqFromWidgetTimesApp = new ReqFromWidgetTimesApp();
+        reqFromWidgetTimesApp = new ReqFromWidgetTimesApp();
         reqFromWidgetTimesApp.widgetAppPkgName = getApplicationContext().getPackageName();
         reqFromWidgetTimesApp.widgetId = widgetId;
-        ActionFromTimesWidgetApp action = new ActionFromTimesWidgetApp();
-        action.currentTime = getCurrentTime();
-        reqFromWidgetTimesApp.action = action;
+        actionFromTimesWidgetApp = new ActionFromTimesWidgetApp();
+        actionFromTimesWidgetApp.currentTime = getCurrentTime();
+        reqFromWidgetTimesApp.action = actionFromTimesWidgetApp;
         intent.putExtra(REQUEST_PARAM, reqFromWidgetTimesApp);
         getApplication().startService(intent);
     }

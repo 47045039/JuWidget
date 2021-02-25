@@ -9,6 +9,7 @@ import com.ju.widget.impl.WidgetServer;
 import com.ju.widget.interfaces.IWidgetManager;
 import com.ju.widget.util.Log;
 
+/*cellLayout概念*/
 public class WidgetContainer extends FrameLayout {
 
     private static final String TAG = "WidgetContainer";

@@ -2,9 +2,11 @@
 //include ':lib_leanlauncher'
 //include ':lib_launcher'
 //include ':lib_launcher3'
+include ':demo'/*widget框架demo*/
 include ':lib_widget'/*widget 框架*/
+include ':lib_widget_plugin'/*widget所在插件*/
+
+include ':demo_widget_app'/*widget所在app的demo*/
 include ':lib_widget_times'/*widget aar*/
 include ':lib_widget_common'/*widget common*/
-include ':demo'/*widget框架demo*/
-include ':demo_widget_app'/*widget所在app的demo*/
 rootProject.name = "JuWidget"
