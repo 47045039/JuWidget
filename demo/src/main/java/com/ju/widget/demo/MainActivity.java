@@ -11,7 +11,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.view.View;
 
-import com.ju.widget.R;
 import com.ju.widget.demo.main.SectionsPagerAdapter;
 
 public class MainActivity extends AppCompatActivity {

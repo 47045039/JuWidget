@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.ju.widget.demo">
+
+    <permission
+        android:name="com.ju.widget.demo.services.IntentService2ReceiveReqFromWidgetView.permission"
+        android:protectionLevel="normal" />
+    <uses-permission android:name="com.ju.widget.demo.services.IntentService2ReceiveReqFromWidgetView.permission" />
+    <uses-permission android:name="com.ju.widget.framework.services.IntentService2ReceiveReqFromWidgetApp.permission"/>
+    <application>
+        <service
+            android:name=".IntentService2ReceiveReqFromWidgetView"
+            android:exported="true"
+            android:permission="com.ju.widget.demo.services.IntentService2ReceiveReqFromWidgetView.permission" />
+    </application>
+
+</manifest>
