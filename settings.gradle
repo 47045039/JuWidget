@@ -1,5 +1,8 @@
 include ':lib_base'
 include ':lib_framework'
 include ':lib_business'
-include ':demo'
+
+include ':demo_business_aar'
+include ':demo_business_app'
+include ':demo_launcher'
 rootProject.name = "JuWidget"
