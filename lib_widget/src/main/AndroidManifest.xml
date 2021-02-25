@@ -2,4 +2,19 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.ju.widget">
 
+    <application>
+
+        <service
+            android:name="com.ju.widget.impl.WidgetService"
+            android:exported="true">
+
+            <intent-filter>
+                <action android:name="ju.intent.action.WIDGET_SERVICE" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+
+        </service>
+
+    </application>
+
 </manifest>

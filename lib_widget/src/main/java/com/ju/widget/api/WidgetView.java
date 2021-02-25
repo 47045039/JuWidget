@@ -4,6 +4,14 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.FrameLayout;
 
+/**
+ * Widget的界面展示；
+ *
+ * 各业务需要以此为父类创建自己的Widget界面；
+ * 重写onDataChanged以更新界面，实现业务显示效果；
+ *
+ * @param <D> WidgetView关联的数据结构
+ */
 public abstract class WidgetView<D extends WidgetData> extends FrameLayout {
 
     protected D mWidgetData;
@@ -34,7 +42,7 @@ public abstract class WidgetView<D extends WidgetData> extends FrameLayout {
         super.onDetachedFromWindow();
     }
 
-    void setWidgetData(D data) {
+    public void setWidgetData(D data) {
         mWidgetData = data;
         onDataChanged(data);
     }

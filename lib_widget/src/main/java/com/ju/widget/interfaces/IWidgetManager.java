@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.ju.widget.api.Query;
 import com.ju.widget.api.Widget;
+import com.ju.widget.api.WidgetData;
 import com.ju.widget.api.WidgetView;
 
 import java.util.ArrayList;
@@ -17,21 +18,42 @@ public interface IWidgetManager {
      * 控制内部加载、刷新等耗时动作的执行；
      * 进程刚启动时，资源消耗很大，避免资源竞争导致系统应用卡顿；
      *
-     * @param enable
+     * @param enable 是否开始运行
      */
     void setEnable(boolean enable);
 
     /**
-     * 设置Widget信息回调接口，只允许在WidgetServer中设置
+     * 解析Widget信息
      *
-     * @param callback
+     * @param pid     产品ID
+     * @param payload Widget ID
+     * @return
      */
-    void setCallback(IWidgetCallback callback);
+    Widget parseWidget(String pid, String payload);
+
+    /**
+     * 解析Widget信息列表
+     *
+     * @param pid     产品ID
+     * @param payload Widget ID
+     * @return
+     */
+    ArrayList<Widget> parseWidgetList(String pid, String payload);
+
+    /**
+     * 解析Widget数据
+     *
+     * @param pid     产品ID
+     * @param wid     Widget ID
+     * @param payload
+     * @return
+     */
+    WidgetData parseWidgetData(String pid, String wid, String payload);
 
     /**
      * 获取Widget信息
      *
-     * @param query
+     * @param query 查询条件
      * @return
      */
     ArrayList<Widget> queryWidget(Query query);
@@ -39,10 +61,18 @@ public interface IWidgetManager {
     /**
      * 创建该Widget对应的View
      *
-     * @param context
-     * @param widget
+     * @param context context
+     * @param widget  widget信息
      * @return
      */
     WidgetView createWidgetView(Context context, Widget widget);
+
+    /**
+     * 通知远端更新Widget数据
+     *
+     * @param widget widget信息
+     * @return
+     */
+    boolean notifyUpdateWidgetData(Widget widget);
 
 }

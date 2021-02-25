@@ -1,19 +1,16 @@
 package com.ju.widget.api;
 
-import android.content.Context;
 import android.graphics.Point;
 import android.text.TextUtils;
 
-import com.ju.widget.interfaces.ICommonCallback;
 import com.ju.widget.util.Tools;
 
-import java.util.ArrayList;
 import java.util.Objects;
 
 import static com.ju.widget.api.Constants.ORIENTATION_MASK;
 
 /**
- * Widget
+ * Widget信息
  *
  * @param <D> Widget数据
  * @param <V> Widget界面

@@ -4,10 +4,10 @@ import android.content.Context;
 
 import com.ju.widget.api.Query;
 import com.ju.widget.api.Widget;
+import com.ju.widget.api.WidgetData;
 import com.ju.widget.api.WidgetView;
 import com.ju.widget.impl.cache.CachedWidget;
 import com.ju.widget.impl.cache.CachedWidgetView;
-import com.ju.widget.interfaces.IWidgetCallback;
 import com.ju.widget.interfaces.IWidgetManager;
 
 import java.lang.reflect.Constructor;
@@ -28,8 +28,6 @@ public class WidgetManagerProxy implements IWidgetManager {
     private final String mImplClass;                // 实际类名
 
     private IWidgetManager mImpl;                   // 实际实现类
-    private IWidgetCallback mCallback;              // 回调
-
     private boolean mEnable;
 
     WidgetManagerProxy(ClassLoader loader, String implClass) {
@@ -47,11 +45,29 @@ public class WidgetManagerProxy implements IWidgetManager {
     }
 
     @Override
-    public void setCallback(IWidgetCallback callback) {
-        mCallback = new WidgetCallbackProxy(callback);
-
+    public Widget parseWidget(String pid, String payload) {
         if (mImpl != null) {
-            mImpl.setCallback(mCallback);
+            return mImpl.parseWidget(pid, payload);
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public ArrayList<Widget> parseWidgetList(String pid, String payload) {
+        if (mImpl != null) {
+            return mImpl.parseWidgetList(pid, payload);
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public WidgetData parseWidgetData(String pid, String wid, String payload) {
+        if (mImpl != null) {
+            return mImpl.parseWidgetData(pid, wid, payload);
+        } else {
+            return null;
         }
     }
 
@@ -79,6 +95,14 @@ public class WidgetManagerProxy implements IWidgetManager {
         }
     }
 
+    @Override
+    public boolean notifyUpdateWidgetData(Widget widget) {
+        if (mImpl != null) {
+            return mImpl.notifyUpdateWidgetData(widget);
+        }
+        return false;
+    }
+
     private IWidgetManager loadImpl() {
         try {
             // TODO: 两端IWidgetManager无法对齐如何处理？
@@ -88,7 +112,6 @@ public class WidgetManagerProxy implements IWidgetManager {
 
             mImpl = constructor.newInstance();
             mImpl.setEnable(mEnable);
-            mImpl.setCallback(mCallback);
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (NoSuchMethodException e) {

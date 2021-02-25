@@ -13,7 +13,8 @@ import java.util.ArrayList;
 /**
  * @Author: liuqunshan@hisense.com
  * @Date: 2021/2/20
- * @Description:
+ * @Description: Widget的数据工具
+ *
  * 从assert里读取各个模块的WidgetManager；
  * 从数据库中读取缓存的widget信息；
  * 从数据库中读取缓存的widget数据；

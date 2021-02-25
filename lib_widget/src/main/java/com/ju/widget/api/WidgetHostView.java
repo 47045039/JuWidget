@@ -1,16 +1,20 @@
 package com.ju.widget.api;
 
 import android.content.Context;
+import android.graphics.Canvas;
 import android.graphics.Point;
 import android.util.AttributeSet;
 import android.widget.FrameLayout;
 
-import com.ju.widget.impl.WidgetServer;
-
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 
-public class WidgetHostView<D extends WidgetData, V extends WidgetView<D>, W extends Widget<D, V>>
-        extends FrameLayout {
+/**
+ * Widget界面的外层框，用于和WidgetContainer交互；
+ *
+ * 处理点击事件、编辑模式等
+ *
+ */
+public class WidgetHostView extends FrameLayout {
 
     private static final String TAG = "WidgetHostView";
 
@@ -18,24 +22,44 @@ public class WidgetHostView<D extends WidgetData, V extends WidgetView<D>, W ext
 
     private final Point mEnlargeCellSpan = new Point(-1, -1);   // 扩展后的CellSpan
 
-    private D mWidgetData;
-    private V mWidgetView;
-    private W mWidget;
+    private boolean mEditMode = false;
+
+
+    private Widget mWidget;
+    private WidgetView mWidgetView;
 
     public WidgetHostView(Context context) {
-        super(context);
+        this(context, null, 0, 0);
     }
 
     public WidgetHostView(Context context, AttributeSet attrs) {
-        super(context, attrs);
+        this(context, attrs, 0, 0);
     }
 
     public WidgetHostView(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
+        this(context, attrs, defStyleAttr, 0);
     }
 
     public WidgetHostView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
+        init();
+    }
+
+    private void init() {
+        setClickable(true);
+        setFocusable(true);
+        setFocusableInTouchMode(false);
+        setDescendantFocusability(FOCUS_BLOCK_DESCENDANTS);
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+
+        if (mEditMode) {
+            // TODO: 绘制删除角标；
+            // TODO: 焦点状态绘制方向图标
+        }
     }
 
     boolean setEnlargeCellSpan(int x, int y) {
@@ -59,15 +83,29 @@ public class WidgetHostView<D extends WidgetData, V extends WidgetView<D>, W ext
         return new Point(-1, -1);
     }
 
-    W getWidget() {
+    /**
+     * 进入、退出编辑模式
+     *
+     * @param edit
+     */
+    void setEditMode(boolean edit) {
+        if (edit != mEditMode) {
+            mEditMode = edit;
+            invalidate();
+            requestLayout();
+        }
+    }
+
+
+    Widget getWidget() {
         return mWidget;
     }
 
-    V getWidgetView() {
+    WidgetView getWidgetView() {
         return mWidgetView;
     }
 
-    boolean attach(W w, V view) {
+    boolean attach(Widget w, WidgetView view) {
         if (w == null || view == null) {
             return false;
         }
@@ -78,10 +116,6 @@ public class WidgetHostView<D extends WidgetData, V extends WidgetView<D>, W ext
 
         mWidget = w;
         mWidgetView = view;
-
-        if (mWidgetData != null) {
-            setData(mWidgetData);
-        }
 
         addView(view, -1, PARAMS);
         return true;
@@ -95,14 +129,6 @@ public class WidgetHostView<D extends WidgetData, V extends WidgetView<D>, W ext
         mWidget = null;
         mWidgetView = null;
         removeAllViews();
-        return true;
-    }
-
-    boolean setData(D data) {
-        mWidgetData = data;
-        if (mWidgetView != null) {
-            mWidgetView.setWidgetData(data);
-        }
         return true;
     }
 
