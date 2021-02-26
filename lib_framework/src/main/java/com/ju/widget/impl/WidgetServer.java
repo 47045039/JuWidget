@@ -7,6 +7,7 @@ import com.ju.widget.api.Product;
 import com.ju.widget.api.Widget;
 import com.ju.widget.api.WidgetData;
 import com.ju.widget.api.WidgetView;
+import com.ju.widget.interfaces.IWidgetCallback;
 import com.ju.widget.interfaces.IWidgetManager;
 import com.ju.widget.util.Log;
 import com.ju.widget.util.Tools;
@@ -19,6 +20,7 @@ public class WidgetServer {
 
     private static final String TAG = "WidgetServer";
 
+    private static final WidgetCallback sWidgetCallback = new WidgetCallback();
     private static final HashMap<Product, IWidgetManager> sProducts = new HashMap<>();
     private static final HashMap<Product, ArrayList<Widget>> sWidgets = new HashMap<>();
     private static final HashMap<Widget, ArrayList<WidgetView>> sViews = new HashMap<>();
@@ -59,6 +61,7 @@ public class WidgetServer {
 
         // TODO: 何时setEnable(true)？
         manager.setEnable(false);
+        manager.setCallback(sWidgetCallback);
         return true;
     }
 
@@ -288,7 +291,7 @@ public class WidgetServer {
      * @return
      */
     public static final WidgetView createWidgetView(Context context, Widget widget) {
-        final IWidgetManager manager = WidgetServer.findWidgetManager(widget.getProductID());
+        final IWidgetManager manager = findWidgetManager(widget.getProductID());
         if (manager != null) {
             return manager.createWidgetView(context, widget);
         } else {
@@ -347,7 +350,7 @@ public class WidgetServer {
      * @param pid 产品ID
      * @return
      */
-    public static final IWidgetManager findWidgetManager(String pid) {
+    static final IWidgetManager findWidgetManager(String pid) {
         if (pid == null || TextUtils.isEmpty(pid)) {
             Log.e(TAG, "findWidgetManager invalid args: ", pid);
             return null;
@@ -463,21 +466,10 @@ public class WidgetServer {
         return null;
     }
 
-    static final void onAddWidget(String pkg, String pid, String payload) {
-        final IWidgetManager mgr = WidgetServer.findWidgetManager(pid);
-        if (mgr == null) {
-            Log.e(TAG, "onAddWidget can not find IWidgetManager: ", pkg, pid);
-            return;
-        }
+    static final class WidgetCallback implements IWidgetCallback {
 
-        final Product product = findProduct(pid);
-        if (product == null) {
-            Log.e(TAG, "onAddWidget can not find Product: ", pkg, pid);
-            return;
-        }
-
-        final Widget widget = mgr.parseWidget(pid, payload);
-        if (widget != null) {
+        @Override
+        public boolean onAddWidget(Product product, Widget widget) {
             WidgetLoader.saveWidget(product, widget);
 
             Tools.runOnMainThread(new Runnable() {
@@ -486,24 +478,11 @@ public class WidgetServer {
                     registerWidget(product, widget);
                 }
             });
-        }
-    }
-
-    static final void onRemoveWidget(String pkg, String pid, String payload) {
-        final IWidgetManager mgr = WidgetServer.findWidgetManager(pid);
-        if (mgr == null) {
-            Log.e(TAG, "onRemoveWidget can not find IWidgetManager: ", pkg, pid);
-            return;
+            return true;
         }
 
-        final Product product = findProduct(pid);
-        if (product == null) {
-            Log.e(TAG, "onRemoveWidget can not find Product: ", pkg, pid);
-            return;
-        }
-
-        final Widget widget = mgr.parseWidget(pid, payload);
-        if (widget != null) {
+        @Override
+        public boolean onRemoveWidget(Product product, Widget widget) {
             WidgetLoader.deleteWidget(product, widget);
 
             Tools.runOnMainThread(new Runnable() {
@@ -512,24 +491,11 @@ public class WidgetServer {
                     unregisterWidget(product, widget);
                 }
             });
-        }
-    }
-
-    static final void onAddWidgetList(String pkg, String pid, String payload) {
-        final IWidgetManager mgr = WidgetServer.findWidgetManager(pid);
-        if (mgr == null) {
-            Log.e(TAG, "onAddWidgetList can not find IWidgetManager: ", pkg, pid);
-            return;
+            return true;
         }
 
-        final Product product = findProduct(pid);
-        if (product == null) {
-            Log.e(TAG, "onAddWidgetList can not find Product: ", pkg, pid);
-            return;
-        }
-
-        final ArrayList<Widget> list = mgr.parseWidgetList(pid, payload);
-        if (list != null) {
+        @Override
+        public boolean onAddWidgetList(Product product, ArrayList<Widget> list) {
             WidgetLoader.saveWidget(product, list);
 
             Tools.runOnMainThread(new Runnable() {
@@ -538,24 +504,11 @@ public class WidgetServer {
                     registerWidget(product, list);
                 }
             });
-        }
-    }
-
-    static final void onRemoveWidgetList(String pkg, String pid, String payload) {
-        final IWidgetManager mgr = WidgetServer.findWidgetManager(pid);
-        if (mgr == null) {
-            Log.e(TAG, "onRemoveWidgetList can not find IWidgetManager: ", pkg, pid);
-            return;
+            return true;
         }
 
-        final Product product = findProduct(pid);
-        if (product == null) {
-            Log.e(TAG, "onRemoveWidgetList can not find Product: ", pkg, pid);
-            return;
-        }
-
-        final ArrayList<Widget> list = mgr.parseWidgetList(pid, payload);
-        if (list != null) {
+        @Override
+        public boolean onRemoveWidgetList(Product product, ArrayList<Widget> list) {
             WidgetLoader.deleteWidget(product, list);
 
             Tools.runOnMainThread(new Runnable() {
@@ -564,37 +517,21 @@ public class WidgetServer {
                     unregisterWidget(product, list);
                 }
             });
-        }
-    }
-
-    static final void onUpdateWidgetData(String pkg, String pid, String wid, String payload) {
-        final IWidgetManager mgr = WidgetServer.findWidgetManager(pid);
-        if (mgr == null) {
-            Log.e(TAG, "onWidgetDataUpdate can not find IWidgetManager: ", pkg, pid, wid);
-            return;
+            return true;
         }
 
-        final Product product = findProduct(pid);
-        if (product == null) {
-            Log.e(TAG, "onWidgetDataUpdate can not find Product: ", pkg, pid, wid);
-            return;
+        @Override
+        public boolean onUpdateWidgetData(Widget widget, WidgetData data) {
+            WidgetLoader.saveWidgetData(widget, data);
+
+            Tools.runOnMainThread(new Runnable() {
+                @Override
+                public void run() {
+                    notifyWidgetDataUpdate(widget, data);
+                }
+            });
+            return true;
         }
-
-        final Widget widget = findWidget(wid);
-        if (product == null) {
-            Log.e(TAG, "onWidgetDataUpdate can not find Widget: ", pkg, pid, wid);
-            return;
-        }
-
-        final WidgetData data = mgr.parseWidgetData(pid, wid, payload);
-        WidgetLoader.saveWidgetData(widget, data);
-
-        Tools.runOnMainThread(new Runnable() {
-            @Override
-            public void run() {
-                notifyWidgetDataUpdate(widget, data);
-            }
-        });
     }
 
 }

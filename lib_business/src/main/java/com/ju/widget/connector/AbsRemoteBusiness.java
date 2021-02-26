@@ -3,6 +3,7 @@ package com.ju.widget.connector;
 import android.app.IntentService;
 import android.content.Intent;
 
+import com.ju.widget.interfaces.connector.Connector;
 import com.ju.widget.interfaces.connector.IRemoteBusinessConnector;
 import com.ju.widget.util.Log;
 
@@ -24,8 +25,8 @@ public abstract class AbsRemoteBusiness extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        final int command = getCommandFromIntent(intent);
-        final String params = getParamsFromIntent(intent);
+        final int command = Connector.getCommand(intent);
+        final String params = Connector.getParams(intent);
 
         Log.i(TAG, "onHandleIntent: ", command, params);
 
@@ -44,16 +45,12 @@ public abstract class AbsRemoteBusiness extends IntentService {
      */
     protected abstract void updateWidgetData(String params);
 
+    /**
+     * Widget数据更新完成后，回传数据给WidgetService
+     *
+     * @param data
+     */
     protected void onWidgetDataUpdated(String data) {
         mWidgetService.notifyWidgetDataUpdated(data);
-    }
-
-    private int getCommandFromIntent(Intent intent) {
-        return intent.getIntExtra(IRemoteBusinessConnector.KEY_COMMAND,
-                IRemoteBusinessConnector.CMD_INVALID);
-    }
-
-    private String getParamsFromIntent(Intent intent) {
-        return intent.getStringExtra(IRemoteBusinessConnector.KEY_PARAMS);
     }
 }

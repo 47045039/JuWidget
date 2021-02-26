@@ -31,21 +31,21 @@ public class WidgetLoader {
      */
     public static final void doInit(Context context) {
         if (sContext == null) {
-            sContext = context;
-            loadWidgetManager(context);
-            readAllWidget(context);
-            readAllWidgetData(context);
+            sContext = context.getApplicationContext();
+            loadWidgetManager(sContext);
+            readAllWidget(sContext);
+            readAllWidgetData(sContext);
         }
     }
 
     private static final void loadWidgetManager(Context context) {
         Product edu = new Product("1", "教育", "教育Description");
         String eduManager = "com.ju.widget.edu.EduWidgetManager";
-        WidgetServer.registerProduct(edu, new WidgetManagerProxy(context, context.getClassLoader(), eduManager));
+        WidgetServer.registerProduct(edu, new WidgetManagerProxy(context, edu, eduManager));
 
         Product vod = new Product("2", "视频", "视频Description");
         String vodManager = "com.ju.widget.vod.VodWidgetManager";
-        WidgetServer.registerProduct(vod, new WidgetManagerProxy(context, context.getClassLoader(), vodManager));
+        WidgetServer.registerProduct(vod, new WidgetManagerProxy(context, vod, vodManager));
     }
 
     private static final void readAllWidget(Context context) {

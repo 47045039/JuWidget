@@ -1,10 +1,10 @@
 package com.ju.widget.interfaces;
 
 import android.content.Context;
+import android.content.Intent;
 
 import com.ju.widget.api.Query;
 import com.ju.widget.api.Widget;
-import com.ju.widget.api.WidgetData;
 import com.ju.widget.api.WidgetView;
 
 import java.util.ArrayList;
@@ -23,32 +23,18 @@ public interface IWidgetManager {
     void setEnable(boolean enable);
 
     /**
-     * 解析Widget信息
+     * 设置回调
      *
-     * @param pid     产品ID
-     * @param payload Widget ID
-     * @return
+     * @param callback
      */
-    Widget parseWidget(String pid, String payload);
+    void setCallback(IWidgetCallback callback);
 
     /**
-     * 解析Widget信息列表
+     * 收到远端业务模块传递的数据
      *
-     * @param pid     产品ID
-     * @param payload Widget ID
-     * @return
+     * @param intent
      */
-    ArrayList<Widget> parseWidgetList(String pid, String payload);
-
-    /**
-     * 解析Widget数据
-     *
-     * @param pid     产品ID
-     * @param wid     Widget ID
-     * @param payload
-     * @return
-     */
-    WidgetData parseWidgetData(String pid, String wid, String payload);
+    void onHandleIntent(Intent intent);
 
     /**
      * 获取Widget信息
@@ -59,6 +45,14 @@ public interface IWidgetManager {
     ArrayList<Widget> queryWidget(Query query);
 
     /**
+     * 通知更新Widget数据
+     *
+     * @param widget widget信息
+     * @return
+     */
+    boolean updateWidgetData(Widget widget);
+
+    /**
      * 创建该Widget对应的View
      *
      * @param context context
@@ -66,13 +60,5 @@ public interface IWidgetManager {
      * @return
      */
     WidgetView createWidgetView(Context context, Widget widget);
-
-    /**
-     * 通知远端更新Widget数据
-     *
-     * @param widget widget信息
-     * @return
-     */
-    boolean notifyUpdateWidgetData(Widget widget);
 
 }

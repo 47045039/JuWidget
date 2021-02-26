@@ -15,7 +15,7 @@ import static com.ju.widget.api.Constants.ORIENTATION_MASK;
  * @param <D> Widget数据
  * @param <V> Widget界面
  */
-public abstract class Widget<D extends WidgetData, V extends WidgetView> {
+public abstract class Widget<D extends WidgetData, V extends WidgetView> implements Comparable<Widget> {
 
     private static final int MIN_UPDATE_INTERVAL = 30 * 60 * 1000;  // 最小刷新间隔，30min
 
@@ -27,9 +27,8 @@ public abstract class Widget<D extends WidgetData, V extends WidgetView> {
 
     private D mData;                            // 关联数据
 
-//    private ICommonCallback<D> mUpdateCallback; // 数据刷新的回调接口
-//    private boolean mUpdating;                  // 是否正在刷新数据
-//    private long mUpdateTimeStamp;              // 数据更新时戳，ms
+    private boolean mUpdating;                  // 是否正在刷新数据
+    private long mUpdateTimeStamp;              // 数据更新时戳，ms
 
     public Widget(String id, String pid) {
         this(id, pid, 1, 1, ORIENTATION_MASK, -1);
@@ -144,101 +143,36 @@ public abstract class Widget<D extends WidgetData, V extends WidgetView> {
         return Objects.hash(mID);
     }
 
-//    private void buildUpdateCallback() {
-//        if (mUpdateCallback != null) {
-//            return;
-//        }
-//
-//        mUpdateCallback = new ICommonCallback<D>() {
-//            @Override
-//            public void onFinished(final boolean succ, final D data) {
-//                Tools.runOnMainThread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        onUpdateFinished(data);
-//                    }
-//                });
-//            }
-//        };
-//    }
-//
-//    /**
-//     * 检查是否已经attach到界面
-//     *
-//     * @return
-//     */
-//    boolean isAttached() {
-//        return mViews.size() > 0;
-//    }
-//
-//    /**
-//     * 绑定Widget和WidgetView
-//     *
-//     * @param view
-//     * @return
-//     */
-//    boolean attach(V view) {
-//        if (!mViews.contains(view)) {
-//            mViews.add(view);
-//        }
-//        return true;
-//    }
-//
-//    /**
-//     * 解绑Widget和WidgetView
-//     *
-//     * @param view
-//     * @return
-//     */
-//    boolean detach(V view) {
-//        if (mViews.contains(view)) {
-//            mViews.remove(view);
-//        }
-//        return true;
-//    }
-//
-//    /**
-//     * 通知更新数据
-//     *
-//     * @param context
-//     * @return
-//     */
-//    boolean update(Context context) {
-//        if (mUpdating) {
-//            return false;
-//        }
-//
-//        mUpdating = true;
-//        buildUpdateCallback();
-//        return doUpdate(context, mUpdateCallback);
-//    }
-//
-//    /**
-//     * 遍历更新已经attached的WidgetView
-//     *
-//     * @param data
-//     * @return
-//     */
-//    boolean onUpdateFinished(D data) {
-//        mData = data;
-//        mUpdating = false;
-//        mUpdateTimeStamp = System.currentTimeMillis();
-//
-//        final ArrayList<V> views = mViews;
-//        if (views.size() > 0) {
-//            for (V view : views) {
-//                view.setData(data);
-//            }
-//        }
-//        return true;
-//    }
-//
-//    /**
-//     * 子类根据业务需求刷新数据，可异步也可同步刷新
-//     *
-//     * @param context
-//     * @return
-//     */
-//    protected abstract boolean doUpdate(Context context, ICommonCallback callback);
+    @Override
+    public int compareTo(Widget o) {
+        if (mUpdateTimeStamp > o.mUpdateTimeStamp) {
+            return -1;
+        } else if (mUpdateTimeStamp < o.mUpdateTimeStamp) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+
+    /**
+     * 设置数据更新标识
+     */
+    boolean update() {
+        if (mUpdating) {
+            return false;
+        }
+
+        mUpdating = true;
+        return true;
+    }
+
+    /**
+     * 设置数据更新标识
+     */
+    void onUpdateFinished(D data) {
+        mData = data;
+        mUpdating = false;
+        mUpdateTimeStamp = System.currentTimeMillis();
+    }
 
 }

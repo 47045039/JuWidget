@@ -1,13 +1,15 @@
 package com.ju.widget.impl;
 
 import android.content.Context;
+import android.content.Intent;
 
+import com.ju.widget.api.Product;
 import com.ju.widget.api.Query;
 import com.ju.widget.api.Widget;
-import com.ju.widget.api.WidgetData;
 import com.ju.widget.api.WidgetView;
 import com.ju.widget.impl.cache.CachedWidget;
 import com.ju.widget.impl.cache.CachedWidgetView;
+import com.ju.widget.interfaces.IWidgetCallback;
 import com.ju.widget.interfaces.IWidgetManager;
 
 import java.lang.reflect.Constructor;
@@ -24,16 +26,17 @@ import java.util.ArrayList;
  */
 public class WidgetManagerProxy implements IWidgetManager {
 
-    private final Context mContext;                 // Context
-    private final ClassLoader mClassLoader;         // 插件class loader
+    private final Context mPluginContext;           // 插件Context
+    private final Product mProduct;                 // 产品分类信息
     private final String mImplClass;                // 实际类名
 
     private IWidgetManager mImpl;                   // 实际实现类
+    private IWidgetCallback mCallback;              // 回调
     private boolean mEnable;
 
-    WidgetManagerProxy(Context context, ClassLoader loader, String implClass) {
-        mContext = context;
-        mClassLoader = loader;
+    WidgetManagerProxy(Context context, Product product, String implClass) {
+        mPluginContext = context;
+        mProduct = product;
         mImplClass = implClass;
     }
 
@@ -47,29 +50,18 @@ public class WidgetManagerProxy implements IWidgetManager {
     }
 
     @Override
-    public Widget parseWidget(String pid, String payload) {
+    public void setCallback(IWidgetCallback callback) {
+        mCallback = callback;
+
         if (mImpl != null) {
-            return mImpl.parseWidget(pid, payload);
-        } else {
-            return null;
+            mImpl.setCallback(mCallback);
         }
     }
 
     @Override
-    public ArrayList<Widget> parseWidgetList(String pid, String payload) {
+    public void onHandleIntent(Intent intent) {
         if (mImpl != null) {
-            return mImpl.parseWidgetList(pid, payload);
-        } else {
-            return null;
-        }
-    }
-
-    @Override
-    public WidgetData parseWidgetData(String pid, String wid, String payload) {
-        if (mImpl != null) {
-            return mImpl.parseWidgetData(pid, wid, payload);
-        } else {
-            return null;
+            mImpl.onHandleIntent(intent);
         }
     }
 
@@ -81,6 +73,14 @@ public class WidgetManagerProxy implements IWidgetManager {
             // TODO: enable前先使用缓存数据
             return null;
         }
+    }
+
+    @Override
+    public boolean updateWidgetData(Widget widget) {
+        if (mImpl != null) {
+            return mImpl.updateWidgetData(widget);
+        }
+        return false;
     }
 
     @Override
@@ -97,23 +97,18 @@ public class WidgetManagerProxy implements IWidgetManager {
         }
     }
 
-    @Override
-    public boolean notifyUpdateWidgetData(Widget widget) {
-        if (mImpl != null) {
-            return mImpl.notifyUpdateWidgetData(widget);
-        }
-        return false;
-    }
-
     private IWidgetManager loadImpl() {
         try {
-            // TODO: 两端IWidgetManager无法对齐如何处理？
-            Class<IWidgetManager> clazz = (Class<IWidgetManager>) mClassLoader.loadClass(mImplClass);
-            Constructor<IWidgetManager> constructor = clazz.getConstructor();
+            // TODO: 后期升级从APK里读取aar，两端IWidgetManager无法对齐如何处理？
+            Class<IWidgetManager> clazz = (Class<IWidgetManager>) mPluginContext
+                    .getClassLoader().loadClass(mImplClass);
+            Constructor<IWidgetManager> constructor = clazz.getConstructor(
+                    Context.class, Product.class);
             constructor.setAccessible(true);
 
-            mImpl = constructor.newInstance();
+            mImpl = constructor.newInstance(mPluginContext, mProduct);
             mImpl.setEnable(mEnable);
+            mImpl.setCallback(mCallback);
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (NoSuchMethodException e) {
