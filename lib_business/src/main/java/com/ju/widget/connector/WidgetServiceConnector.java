@@ -5,13 +5,18 @@ import android.content.Intent;
 
 import com.ju.widget.interfaces.connector.Connector;
 import com.ju.widget.interfaces.connector.IWidgetServiceConnector;
+import com.ju.widget.util.Log;
 
 public class WidgetServiceConnector implements IWidgetServiceConnector {
 
-    private final Context mContext;
+    private static final String TAG = "WidgetServiceConnector";
 
-    public WidgetServiceConnector(Context ctx) {
-        mContext = ctx.getApplicationContext();
+    private final Context mContext;
+    private final String mRemotePackage;
+
+    public WidgetServiceConnector(Context ctx, String pkg) {
+        mContext = ctx;
+        mRemotePackage = pkg;
     }
 
     /**
@@ -80,6 +85,7 @@ public class WidgetServiceConnector implements IWidgetServiceConnector {
      */
     protected Intent createIntent(int action, int version, String pid, String wid, String data) {
         final Intent intent = new Intent(INTENT_ACTION);
+        intent.setPackage(mRemotePackage);
         Connector.putPackage(intent, mContext.getPackageName());
         Connector.putVersion(intent, version);
         Connector.putAction(intent, action);
@@ -91,6 +97,7 @@ public class WidgetServiceConnector implements IWidgetServiceConnector {
 
     @Override
     public void sendData(Intent intent) {
+        Log.i(TAG, "sendData: ", intent);
         mContext.startService(intent);
     }
 

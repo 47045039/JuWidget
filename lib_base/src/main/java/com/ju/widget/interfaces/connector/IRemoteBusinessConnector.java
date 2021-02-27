@@ -10,7 +10,12 @@ public interface IRemoteBusinessConnector {
     /**
      * 与远端业务模块通信的intent action前缀（多个业务模块须分开，所以要拼接业务模块的包名）
      */
-    String INTENT_ACTION_PREFIX = Connector.INTENT_ACTION_REMOTE_BUSINESS;
+    String INTENT_ACTION_PREFIX = Connector.INTENT_ACTION_WIDGET_BUSINESS;
+
+    /**
+     * 与远端业务模块通信的intent action前缀（多个业务模块须分开，所以要拼接业务模块的包名）
+     */
+    String PERMISSION_PREFIX = Connector.PERMISSION_WIDGET_BUSINESS;
 
     /**
      * 远端业务的命令常量定义

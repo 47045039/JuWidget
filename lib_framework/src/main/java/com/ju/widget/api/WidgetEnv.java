@@ -29,7 +29,7 @@ public class WidgetEnv {
     public static final void init(Context context) {
         if (!sInited) {
             sInited = true;
-            doInit(context);
+            doInit(context.getApplicationContext());
         }
     }
 

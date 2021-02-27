@@ -15,6 +15,7 @@ import com.ju.widget.util.Log;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ import java.util.ArrayList;
  * @Author: liuqunshan@hisense.com
  * @Date: 2021/2/20
  * @Description: Widget的数据工具
- *
+ * <p>
  * 从assert里读取各个模块的WidgetManager；
  * 从数据库中读取缓存的widget信息；
  * 从数据库中读取缓存的widget数据；
@@ -38,6 +39,7 @@ public class WidgetLoader {
 
     /**
      * 初始化
+     *
      * @param context
      */
     public static final void doInit(Context context) {
@@ -57,7 +59,7 @@ public class WidgetLoader {
             IWidgetManager manager = null;
 
             for (String file : assets.list("widget")) {
-                object = readConfig(assets, file);
+                object = readConfig(assets, "widget" + File.separator + file);
 
                 Log.i(TAG, "read config: ", file, object);
 

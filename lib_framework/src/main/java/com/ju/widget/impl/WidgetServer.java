@@ -38,7 +38,7 @@ public class WidgetServer {
         }
 
         if (!Tools.isMainThread()) {
-            Log.e(TAG, "registerProduct in invalid thread: ", product, manager);
+            Log.w(TAG, "registerProduct in invalid thread: ", product, manager);
 
             Tools.runOnMainThread(new Runnable() {
                 @Override
@@ -60,7 +60,7 @@ public class WidgetServer {
         sProducts.put(product, manager);
 
         // TODO: 何时setEnable(true)？
-        manager.setEnable(false);
+        manager.setEnable(true);
         manager.setCallback(sWidgetCallback);
         return true;
     }
@@ -79,7 +79,7 @@ public class WidgetServer {
         }
 
         if (!Tools.isMainThread()) {
-            Log.e(TAG, "registerWidget in invalid thread: ", product, widget);
+            Log.w(TAG, "registerWidget in invalid thread: ", product, widget);
 
             Tools.runOnMainThread(new Runnable() {
                 @Override
@@ -124,7 +124,7 @@ public class WidgetServer {
         }
 
         if (!Tools.isMainThread()) {
-            Log.e(TAG, "unregisterWidget in invalid thread: ", product, widget);
+            Log.w(TAG, "unregisterWidget in invalid thread: ", product, widget);
 
             Tools.runOnMainThread(new Runnable() {
                 @Override
@@ -164,7 +164,7 @@ public class WidgetServer {
         }
 
         if (!Tools.isMainThread()) {
-            Log.e(TAG, "registerWidget in invalid thread: ", product, list);
+            Log.w(TAG, "registerWidget in invalid thread: ", product, list);
 
             Tools.runOnMainThread(new Runnable() {
                 @Override
@@ -211,7 +211,7 @@ public class WidgetServer {
         }
 
         if (!Tools.isMainThread()) {
-            Log.e(TAG, "unregisterWidget in invalid thread: ", product, list);
+            Log.w(TAG, "unregisterWidget in invalid thread: ", product, list);
 
             Tools.runOnMainThread(new Runnable() {
                 @Override
@@ -258,7 +258,7 @@ public class WidgetServer {
         }
 
         if (!Tools.isMainThread()) {
-            Log.e(TAG, "notifyWidgetDataUpdate in invalid thread: ", widget, data);
+            Log.w(TAG, "notifyWidgetDataUpdate in invalid thread: ", widget, data);
 
             Tools.runOnMainThread(new Runnable() {
                 @Override

@@ -9,6 +9,8 @@ public interface IWidgetServiceConnector {
 
     String INTENT_ACTION = Connector.INTENT_ACTION_WIDGET_SERVICE;
 
+    String PERMISSION = Connector.PERMISSION_WIDGET_SERVICE;
+
     /**
      * WidgetService收到的Intent数据中的Action常量定义
      */

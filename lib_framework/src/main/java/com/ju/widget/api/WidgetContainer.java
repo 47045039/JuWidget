@@ -59,6 +59,13 @@ public class WidgetContainer extends FrameLayout {
         }
     }
 
+    /**
+     * 是否编辑模式
+     */
+    public boolean isEditMode() {
+        return mEditMode;
+    }
+
     public boolean addWidget(Widget widget) {
         final Context context = getContext();
         final WidgetView view = WidgetServer.createWidgetView(context, widget);

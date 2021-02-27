@@ -7,12 +7,22 @@ public class Connector {
     /**
      * 框架WidgetService intent action
      */
-    public static final String INTENT_ACTION_WIDGET_SERVICE = "ju.intent.action.WIDGET_SERVICE";
+    public static final String INTENT_ACTION_WIDGET_SERVICE = "com.ju.widget.intent.action.WIDGET_SERVICE";
+
+    /**
+     * 框架WidgetService permission
+     */
+    public static final String PERMISSION_WIDGET_SERVICE = "com.ju.widget.permission.WIDGET_SERVICE";
 
     /**
      * 与远端业务模块通信的intent action前缀（多个业务模块须分开，所以要拼接业务模块的包名）
      */
-    public static final String INTENT_ACTION_REMOTE_BUSINESS = "ju.intent.action.WIDGET_REMOTE_BUSINESS.";
+    public static final String INTENT_ACTION_WIDGET_BUSINESS = "com.ju.widget.intent.action.WIDGET_BUSINESS.";
+
+    /**
+     * 与远端业务模块通信的permission前缀（多个业务模块须分开，所以要拼接业务模块的包名）
+     */
+    public static final String PERMISSION_WIDGET_BUSINESS = "com.ju.widget.permission.WIDGET_BUSINESS.";
 
     /**
      * Intent中数据的key常量定义
@@ -104,5 +114,5 @@ public class Connector {
     public static final void putPayload(Intent intent, String payload) {
         intent.putExtra(KEY_PAYLOAD, payload);
     }
-    
+
 }
