@@ -23,7 +23,7 @@ public class WidgetHostView extends FrameLayout {
     private final Point mEnlargeCellSpan = new Point(-1, -1);   // 扩展后的CellSpan
 
     private boolean mEditMode = false;
-
+    private boolean mShowing = false;
 
     private Widget mWidget;
     private WidgetView mWidgetView;
@@ -62,6 +62,9 @@ public class WidgetHostView extends FrameLayout {
         }
     }
 
+    /**
+     * 设置扩展的跨度，仅用于自动补位场景；
+     */
     boolean setEnlargeCellSpan(int x, int y) {
         final Point span = mEnlargeCellSpan;
         if (span.x == x && span.y == y) {
@@ -72,10 +75,16 @@ public class WidgetHostView extends FrameLayout {
         }
     }
 
+    /**
+     * 获取扩展跨度
+     */
     Point getEnlargeCellSpan() {
         return new Point(mEnlargeCellSpan);
     }
 
+    /**
+     * 获取原始跨度
+     */
     Point getOriginCellSpan() {
         if (mWidget != null) {
             return mWidget.getCellSpan();
@@ -85,28 +94,55 @@ public class WidgetHostView extends FrameLayout {
 
     /**
      * 进入、退出编辑模式
-     *
-     * @param edit
      */
     void setEditMode(boolean edit) {
         if (edit != mEditMode) {
             mEditMode = edit;
+
             invalidate();
             requestLayout();
         }
     }
 
+    /**
+     * 设置可见性；
+     *
+     * 在WidgetContainer滚动时：
+     * 1、WidgetHostView处于视口内，showing = true
+     * 2、WidgetHostView处于视口外，showing = false
+     */
+    void setVisible(boolean showing) {
+        if (showing != mShowing) {
+            mShowing = showing;
 
+            if (mWidgetView != null) {
+                mWidgetView.onVisibleChanged(showing);
+            }
+
+            invalidate();
+            requestLayout();
+        }
+    }
+
+    /**
+     * 获取当前关联的Widget
+     */
     Widget getWidget() {
         return mWidget;
     }
 
+    /**
+     * 获取当前关联的WidgetView
+     */
     WidgetView getWidgetView() {
         return mWidgetView;
     }
 
-    boolean attach(Widget w, WidgetView view) {
-        if (w == null || view == null) {
+    /**
+     * 关联Widget、WidgetView信息，并将WidgetView加入到view层级
+     */
+    boolean attach(Widget widget, WidgetView view) {
+        if (widget == null || view == null) {
             return false;
         }
 
@@ -114,17 +150,27 @@ public class WidgetHostView extends FrameLayout {
             removeAllViewsInLayout();
         }
 
-        mWidget = w;
+        mWidget = widget;
         mWidgetView = view;
 
         addView(view, -1, PARAMS);
+
+        view.onVisibleChanged(mShowing);
+
         return true;
     }
 
+    /**
+     * 解除Widget、WidgetView关联关系，并将WidgetView移除
+     */
     boolean detach(/*W widget, V view*/) {
         /*if (mWidget != widget || mWidgetView != view) {
             return false;
         }*/
+
+        if (mWidgetView != null) {
+            mWidgetView.onVisibleChanged(false);
+        }
 
         mWidget = null;
         mWidgetView = null;

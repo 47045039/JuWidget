@@ -56,4 +56,11 @@ public abstract class WidgetView<D extends WidgetData> extends FrameLayout {
      */
     protected abstract void onDataChanged(D data);
 
+    /**
+     * showing = true，处于视口内；
+     * showing = false，处于视口外；
+     *
+     * @param showing
+     */
+    protected abstract void onVisibleChanged(boolean showing);
 }
