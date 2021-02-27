@@ -1,0 +1,10 @@
+{
+  "product": {
+    "id": "demo_business",
+    "title": "demo_business_title",
+    "description": "demo_business_description"
+  },
+  "manager": {
+    "class": "com.ju.demo.business.aar.DemoWidgetManager"
+  }
+}

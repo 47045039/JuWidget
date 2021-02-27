@@ -28,4 +28,9 @@ android {
 dependencies {
     implementation project(path: ':lib_base')
     implementation project(path: ':lib_framework')
+
+    // TODO: 业务模块aar配置：
+    // 1、无源码时，需要各个业务提供aar，并打包到launcher中；
+    // 2、有源码时，可以直接在launcher中编译业务的aar模块；
+    implementation project(path: ':demo_business_aar')
 }
