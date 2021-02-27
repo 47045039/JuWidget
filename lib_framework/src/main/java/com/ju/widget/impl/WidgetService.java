@@ -29,13 +29,8 @@ public class WidgetService extends IntentService {
             return;
         }
 
-        final int action = Connector.getAction(intent);
         final String pkg = Connector.getPackage(intent);
         final String pid = Connector.getProductId(intent);
-        final String wid = Connector.getWidgetId(intent);
-        final String payload = Connector.getPayload(intent);
-
-        Log.i(TAG, "onHandleIntent: ", action, pkg, pid, wid, payload);
 
         final IWidgetManager mgr = WidgetServer.findWidgetManager(pid);
         if (mgr == null) {

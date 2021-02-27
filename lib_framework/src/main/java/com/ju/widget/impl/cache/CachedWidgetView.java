@@ -54,4 +54,9 @@ public class CachedWidgetView extends WidgetView<CachedWidgetData> {
 //            mBackground.setImageBitmap(null);
         }
     }
+
+    @Override
+    protected void onVisibleChanged(boolean showing) {
+
+    }
 }

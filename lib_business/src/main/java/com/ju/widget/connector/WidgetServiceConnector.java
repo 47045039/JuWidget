@@ -3,6 +3,7 @@ package com.ju.widget.connector;
 import android.content.Context;
 import android.content.Intent;
 
+import com.ju.widget.interfaces.connector.Connector;
 import com.ju.widget.interfaces.connector.IWidgetServiceConnector;
 
 public class WidgetServiceConnector implements IWidgetServiceConnector {
@@ -16,66 +17,76 @@ public class WidgetServiceConnector implements IWidgetServiceConnector {
     /**
      * 通知WidgetService新增Widget信息
      *
-     * @param widget
+     * @param version 本地业务模块的兼容版本号
+     * @param pid     Product ID
+     * @param widget  Widget信息字串
      */
-    public void notifyWidgetAdded(String widget) {
-        final Intent intent = new Intent(INTENT_ACTION);
-        intent.putExtra(KEY_PACKAGE, mContext.getPackageName());
-        intent.putExtra(KEY_ACTION, ACT_ADD_WIDGET);
-        intent.putExtra(KEY_PAYLOAD, widget);
+    public void notifyWidgetAdded(int version, String pid, String widget) {
+        final Intent intent = createIntent(ACT_ADD_WIDGET, version, pid, "", widget);
         sendData(intent);
     }
 
     /**
      * 通知WidgetService移除Widget信息
      *
-     * @param widget
+     * @param version 本地业务模块的兼容版本号
+     * @param pid     Product ID
+     * @param widget  Widget信息字串
      */
-    public void notifyWidgetRemoved(String widget) {
-        final Intent intent = new Intent(INTENT_ACTION);
-        intent.putExtra(KEY_PACKAGE, mContext.getPackageName());
-        intent.putExtra(KEY_ACTION, ACT_REMOVE_WIDGET);
-        intent.putExtra(KEY_PAYLOAD, widget);
+    public void notifyWidgetRemoved(int version, String pid, String widget) {
+        final Intent intent = createIntent(ACT_REMOVE_WIDGET, version, pid, "", widget);
         sendData(intent);
     }
 
     /**
      * 通知WidgetService新增Widget list
      *
-     * @param list
+     * @param version 本地业务模块的兼容版本号
+     * @param pid     Product ID
+     * @param list    Widget信息列表字串
      */
-    public void notifyWidgetListAdded(String list) {
-        final Intent intent = new Intent(INTENT_ACTION);
-        intent.putExtra(KEY_PACKAGE, mContext.getPackageName());
-        intent.putExtra(KEY_ACTION, ACT_ADD_WIDGET_LIST);
-        intent.putExtra(KEY_PAYLOAD, list);
+    public void notifyWidgetListAdded(int version, String pid, String list) {
+        final Intent intent = createIntent(ACT_ADD_WIDGET_LIST, version, pid, "", list);
         sendData(intent);
     }
 
     /**
      * 通知WidgetService移除Widget list
      *
-     * @param list
+     * @param version 本地业务模块的兼容版本号
+     * @param pid     Product ID
+     * @param list    Widget信息列表字串
      */
-    public void notifyWidgetListRemoved(String list) {
-        final Intent intent = new Intent(INTENT_ACTION);
-        intent.putExtra(KEY_PACKAGE, mContext.getPackageName());
-        intent.putExtra(KEY_ACTION, ACT_REMOVE_WIDGET_LIST);
-        intent.putExtra(KEY_PAYLOAD, list);
+    public void notifyWidgetListRemoved(int version, String pid, String list) {
+        final Intent intent = createIntent(ACT_REMOVE_WIDGET_LIST, version, pid, "", list);
         sendData(intent);
     }
 
     /**
      * 通知WidgetService Widget数据有更新
      *
-     * @param data
+     * @param version 本地业务模块的兼容版本号
+     * @param pid     Product ID
+     * @param wid     Widget ID
+     * @param data    Widget数据字串
      */
-    public void notifyWidgetDataUpdated(String data) {
-        final Intent intent = new Intent(INTENT_ACTION);
-        intent.putExtra(KEY_PACKAGE, mContext.getPackageName());
-        intent.putExtra(KEY_ACTION, ACT_UPDATE_WIDGET_DATA);
-        intent.putExtra(KEY_PAYLOAD, data);
+    public void notifyWidgetDataUpdated(int version, String pid, String wid, String data) {
+        final Intent intent = createIntent(ACT_UPDATE_WIDGET_DATA, version, pid, wid, data);
         sendData(intent);
+    }
+
+    /**
+     * 通用的组装Intent工具方法
+     */
+    protected Intent createIntent(int action, int version, String pid, String wid, String data) {
+        final Intent intent = new Intent(INTENT_ACTION);
+        Connector.putPackage(intent, mContext.getPackageName());
+        Connector.putVersion(intent, version);
+        Connector.putAction(intent, action);
+        Connector.putProductId(intent, pid);
+        Connector.putWidgetId(intent, wid);
+        Connector.putPayload(intent, data);
+        return intent;
     }
 
     @Override

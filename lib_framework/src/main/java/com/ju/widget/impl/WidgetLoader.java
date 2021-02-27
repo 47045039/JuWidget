@@ -85,12 +85,12 @@ public class WidgetLoader {
 
     private static final void readAllWidget(Context context) {
         // TODO：从数据库中读取所有缓存的widget信息
-        Product edu = new Product(1, "1", "教育", "教育Description");
+        Product edu = new Product("1", "教育", "教育Description");
         ArrayList<Widget> eduList = new ArrayList<>(2);
         eduList.add(new CachedWidget("CachedWidget_1", "1", 1, 1));
         eduList.add(new CachedWidget("CachedWidget_2", "1", 1, 2));
 
-        Product vod = new Product(1, "2", "视频", "视频Description");
+        Product vod = new Product("2", "视频", "视频Description");
         ArrayList<Widget> vodList = new ArrayList<>(2);
         vodList.add(new CachedWidget("CachedWidget_VOD_1", "2", 1, 1));
         vodList.add(new CachedWidget("CachedWidget_VOD_2", "2", 1, 2));
@@ -162,8 +162,7 @@ public class WidgetLoader {
                 return null;
             }
 
-            return new Product(obj.getInt("version"),
-                    obj.getString("id"),
+            return new Product(obj.getString("id"),
                     obj.getString("title"),
                     obj.getString("description"));
         } catch (JSONException e) {

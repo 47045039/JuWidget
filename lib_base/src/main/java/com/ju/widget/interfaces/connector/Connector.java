@@ -18,11 +18,12 @@ public class Connector {
      * Intent中数据的key常量定义
      */
     public static final String KEY_PACKAGE = "package";
+    public static final String KEY_VERSION = "version";
     public static final String KEY_COMMAND = "command";
-    public static final String KEY_PARAMS = "params";
     public static final String KEY_ACTION = "action";
     public static final String KEY_PRODUCT_ID = "product_id";
     public static final String KEY_WIDGET_ID = "widget_id";
+    public static final String KEY_PARAMS = "params";
     public static final String KEY_PAYLOAD = "payload";
 
     /**
@@ -35,12 +36,25 @@ public class Connector {
      */
     public static final int ACT_INVALID = -1;
 
+    /**
+     * 默认Product version
+     */
+    public static final int VERSION_DEFAULT = 0;
+
     public static final String getPackage(Intent intent) {
         return intent.getStringExtra(KEY_PACKAGE);
     }
 
     public static final void putPackage(Intent intent, String pkg) {
         intent.putExtra(KEY_PACKAGE, pkg);
+    }
+
+    public static final int getVersion(Intent intent) {
+        return intent.getIntExtra(KEY_VERSION, VERSION_DEFAULT);
+    }
+
+    public static final void putVersion(Intent intent, int version) {
+        intent.putExtra(KEY_VERSION, version);
     }
 
     public static final int getCommand(Intent intent) {
@@ -51,20 +65,20 @@ public class Connector {
         intent.putExtra(KEY_COMMAND, cmd);
     }
 
-    public static final String getParams(Intent intent) {
-        return intent.getStringExtra(KEY_PARAMS);
-    }
-
-    public static final void putParams(Intent intent, String params) {
-        intent.putExtra(KEY_PARAMS, params);
-    }
-
     public static final int getAction(Intent intent) {
         return intent.getIntExtra(KEY_ACTION, ACT_INVALID);
     }
 
     public static final void putAction(Intent intent, int act) {
         intent.putExtra(KEY_ACTION, act);
+    }
+
+    public static final String getParams(Intent intent) {
+        return intent.getStringExtra(KEY_PARAMS);
+    }
+
+    public static final void putParams(Intent intent, String params) {
+        intent.putExtra(KEY_PARAMS, params);
     }
 
     public static final String getProductId(Intent intent) {

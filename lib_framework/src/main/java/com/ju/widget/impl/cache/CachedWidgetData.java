@@ -14,8 +14,8 @@ public class CachedWidgetData extends WidgetData {
 
     private Bitmap mBackground;         // 背景图片
 
-    public CachedWidgetData(String id, String title) {
-        super(id, title);
+    public CachedWidgetData(String title) {
+        super(title);
     }
 
     public Bitmap getBackground() {

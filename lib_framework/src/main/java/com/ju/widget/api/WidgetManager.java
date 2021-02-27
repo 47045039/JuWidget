@@ -28,14 +28,16 @@ public abstract class WidgetManager<C extends IRemoteBusinessConnector> implemen
 
     protected final Context mContext;
     protected final Product mProduct;
+    protected final int mVersion;
     protected final C mConnector;
 
     protected IWidgetCallback mCallback;
     protected boolean mEnabled;
 
-    protected WidgetManager(Context ctx, Product product) {
+    protected WidgetManager(Context ctx, Product product, int version) {
         mContext = ctx;
         mProduct = product;
+        mVersion = version;
         mConnector = createRemoteBusinessConnector();
     }
 
@@ -51,13 +53,14 @@ public abstract class WidgetManager<C extends IRemoteBusinessConnector> implemen
 
     @Override
     public void onHandleIntent(Intent intent) {
-        final int action = Connector.getAction(intent);
         final String pkg = Connector.getPackage(intent);
+        final int remoteVersion = Connector.getVersion(intent);
+        final int action = Connector.getAction(intent);
         final String pid = Connector.getProductId(intent);
         final String wid = Connector.getWidgetId(intent);
         final String payload = Connector.getPayload(intent);
 
-        Log.i(TAG, "onHandleIntent: ", action, pkg, pid, wid, payload);
+        Log.i(TAG, "onHandleIntent: ", pkg, remoteVersion, action, pid, wid, payload);
 
         final IWidgetCallback callback = mCallback;
         if (callback == null) {
@@ -67,19 +70,20 @@ public abstract class WidgetManager<C extends IRemoteBusinessConnector> implemen
 
         switch (action) {
             case IWidgetServiceConnector.ACT_ADD_WIDGET:
-                onAddWidget(callback, payload);
+                onAddWidget(callback, parseWidget(remoteVersion, payload));
                 return;
             case IWidgetServiceConnector.ACT_REMOVE_WIDGET:
-                onRemoveWidget(callback, payload);
+                onRemoveWidget(callback, parseWidget(remoteVersion, payload));
                 return;
             case IWidgetServiceConnector.ACT_ADD_WIDGET_LIST:
-                onAddWidgetList(callback, payload);
+                onAddWidgetList(callback, parseWidgetList(remoteVersion, payload));
                 return;
             case IWidgetServiceConnector.ACT_REMOVE_WIDGET_LIST:
-                onRemoveWidgetList(callback, payload);
+                onRemoveWidgetList(callback, parseWidgetList(remoteVersion, payload));
                 return;
             case IWidgetServiceConnector.ACT_UPDATE_WIDGET_DATA:
-                onUpdateWidgetData(callback, wid, payload);
+                final Widget widget = findWidget(wid);
+                onUpdateWidgetData(callback, widget, parseWidgetData(remoteVersion, widget, payload));
                 return;
             default:
                 Log.e(TAG, "invalid action: ", action);
@@ -145,26 +149,30 @@ public abstract class WidgetManager<C extends IRemoteBusinessConnector> implemen
     /**
      * 解析Widget信息
      *
-     * @param payload Widget信息字串
+     * @param remoteVersion 对端版本号
+     * @param payload       Widget信息字串
      * @return
      */
-    protected abstract Widget parseWidget(String payload);
+    protected abstract Widget parseWidget(int remoteVersion, String payload);
 
     /**
      * 解析Widget信息列表
      *
-     * @param payload Widget信息列表字串
+     * @param remoteVersion 对端版本号
+     * @param payload       Widget信息列表字串
      * @return
      */
-    protected abstract ArrayList<Widget> parseWidgetList(String payload);
+    protected abstract ArrayList<Widget> parseWidgetList(int remoteVersion, String payload);
 
     /**
      * 解析Widget数据
      *
-     * @param payload Widget数据字串
+     * @param remoteVersion 对端版本号
+     * @param widget        Widget信息
+     * @param payload       Widget数据字串
      * @return
      */
-    protected abstract WidgetData parseWidgetData(Widget widget, String payload);
+    protected abstract WidgetData parseWidgetData(int remoteVersion, Widget widget, String payload);
 
     @Override
     public abstract WidgetView createWidgetView(Context context, Widget widget);
@@ -173,27 +181,26 @@ public abstract class WidgetManager<C extends IRemoteBusinessConnector> implemen
         return mWidgetCache.get(wid);
     }
 
-    protected final void onAddWidget(IWidgetCallback callback, String payload) {
-        final Widget widget = parseWidget(payload);
+    protected final void onAddWidget(IWidgetCallback callback, Widget widget) {
         if (widget != null) {
+            mWidgetCache.remove(widget.getID());
             mWidgetCache.put(widget.getID(), widget);
             callback.onAddWidget(mProduct, widget);
         }
     }
 
-    protected final void onRemoveWidget(IWidgetCallback callback, String payload) {
-        final Widget widget = parseWidget(payload);
+    protected final void onRemoveWidget(IWidgetCallback callback, Widget widget) {
         if (widget != null) {
             mWidgetCache.remove(widget.getID());
             callback.onAddWidget(mProduct, widget);
         }
     }
 
-    protected final void onAddWidgetList(IWidgetCallback callback, String payload) {
-        final ArrayList<Widget> list = parseWidgetList(payload);
+    protected final void onAddWidgetList(IWidgetCallback callback, ArrayList<Widget> list) {
         if (list != null) {
             final ConcurrentHashMap map = mWidgetCache;
             for (Widget widget : list) {
+                map.remove(widget.getID());
                 map.put(widget.getID(), widget);
             }
 
@@ -201,8 +208,7 @@ public abstract class WidgetManager<C extends IRemoteBusinessConnector> implemen
         }
     }
 
-    protected final void onRemoveWidgetList(IWidgetCallback callback, String payload) {
-        final ArrayList<Widget> list = parseWidgetList(payload);
+    protected final void onRemoveWidgetList(IWidgetCallback callback, ArrayList<Widget> list) {
         if (list != null) {
             final ConcurrentHashMap map = mWidgetCache;
             for (Widget widget : list) {
@@ -213,11 +219,9 @@ public abstract class WidgetManager<C extends IRemoteBusinessConnector> implemen
         }
     }
 
-    protected final void onUpdateWidgetData(IWidgetCallback callback, String wid, String payload) {
-        final Widget widget = findWidget(wid);
+    protected final void onUpdateWidgetData(IWidgetCallback callback, Widget widget, WidgetData data) {
         if (widget != null) {
-            final WidgetData data = parseWidgetData(widget, payload);
-            mDataCache.put(wid, data);
+            mDataCache.put(widget.getID(), data);
 
             widget.onUpdateFinished(data);
             callback.onUpdateWidgetData(widget, data);

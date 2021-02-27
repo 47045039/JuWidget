@@ -5,20 +5,14 @@ package com.ju.widget.api;
  */
 public abstract class WidgetData {
 
-    protected final String mWidgetID;   // widget id
     protected final String mTitle;      // 文字
 
     protected Object mJump;       // 跳转数据
     protected Object mLog;        // 日志数据
     protected Object mShowing;    // 显示数据
 
-    public WidgetData(String id, String title) {
-        mWidgetID = id;
+    public WidgetData(String title) {
         mTitle = title;
-    }
-
-    public String getWidgetID() {
-        return mWidgetID;
     }
 
     public String getTitle() {
