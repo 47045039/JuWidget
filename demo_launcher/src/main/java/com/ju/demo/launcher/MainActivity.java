@@ -1,19 +1,21 @@
 package com.ju.demo.launcher;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
+import com.ju.widget.api.Widget;
 import com.ju.widget.api.WidgetContainer;
 import com.ju.widget.api.WidgetEnv;
-import com.ju.widget.interfaces.connector.IRemoteBusinessConnector;
-import com.ju.widget.interfaces.connector.IWidgetServiceConnector;
-import com.ju.widget.util.Log;
+import com.ju.widget.impl.WidgetServer;
+import com.ju.widget.interfaces.IWidgetManager;
 
 public class MainActivity extends Activity implements View.OnClickListener {
 
     private static final String TAG = "DemoLauncherActivity";
+
+    private static final String PRODUCT_ID = "DemoBusinessProductID";
+    private static final String WIDGET_ID = "DemoBusiness_Widget_1";
 
     private WidgetContainer mContainer1;
     private WidgetContainer mContainer2;
@@ -63,27 +65,25 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     private void editMode(WidgetContainer container) {
         container.setEditMode(!container.isEditMode());
-
-        Intent intent = new Intent(IWidgetServiceConnector.INTENT_ACTION);
-        intent.setPackage(getPackageName());
-        startService(intent);
-        Log.e(TAG, "start service: ", intent);
-
-        intent = new Intent(IRemoteBusinessConnector.INTENT_ACTION_PREFIX + "com.ju.demo.business");
-        intent.setClassName("com.ju.demo.business", "com.ju.demo.business.DemoBusiness");
-        startService(intent);
-        Log.e(TAG, "start service: ", intent);
     }
 
     private void addWidget(WidgetContainer container) {
-
+        final Widget widget = WidgetServer.findWidget(WIDGET_ID);
+        if (widget != null) {
+            container.addWidget(widget);
+        }
     }
 
     private void removeWidget(WidgetContainer container) {
-
+        container.removeAllViews();
     }
 
     private void updateWidget(WidgetContainer container) {
+        final IWidgetManager manager = WidgetServer.findWidgetManager(PRODUCT_ID);
+        final Widget widget = WidgetServer.findWidget(WIDGET_ID);
 
+        if (manager != null && widget != null) {
+            manager.updateWidgetData(widget);
+        }
     }
 }

@@ -18,12 +18,19 @@ public class DemoBusiness extends AbsBusiness {
     // 必须和业务aar模块的assets/widget里配置的product信息一致
     private static final String PRODUCT_ID = "DemoBusinessProductID";
     private static final int VERSION = 2;
+    private static boolean TEST_FLAG = false;
 
     private final Handler mHandler = new Handler();
 
     public DemoBusiness() {
         super(TAG, REMOTE_PACKAGE, PRODUCT_ID, VERSION);
-        testConnector();
+
+        if (!TEST_FLAG) {
+            // IntentService会多次启动，此处控制测试代码只运行一次；
+            // 实际场景中，需要注意初始化动作在进程内只执行一次；
+            TEST_FLAG = true;
+            testConnector();
+        }
     }
 
     @Override

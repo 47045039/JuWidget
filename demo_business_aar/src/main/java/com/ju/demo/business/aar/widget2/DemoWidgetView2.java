@@ -25,7 +25,7 @@ public class DemoWidgetView2 extends WidgetView<DemoWidgetData2> {
 
     @Override
     protected void onDataChanged(DemoWidgetData2 data) {
-
+        // TODO: 更新界面
     }
 
     @Override

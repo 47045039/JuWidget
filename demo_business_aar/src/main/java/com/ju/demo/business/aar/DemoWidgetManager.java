@@ -136,7 +136,7 @@ public class DemoWidgetManager extends WidgetManager<RemoteBusinessConnector> {
 
     private final Widget randomWidget(String wid) {
         final Random random = new Random();
-        if (random.nextBoolean()) {
+        if (wid.endsWith("1")) {
             return new DemoWidget1(wid, mProduct.mID,
                     randomSpan(random), randomSpan(random),
                     Constants.ORIENTATION_MASK, -1);
