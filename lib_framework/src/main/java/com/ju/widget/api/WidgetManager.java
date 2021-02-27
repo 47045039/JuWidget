@@ -123,8 +123,18 @@ public abstract class WidgetManager<C extends IRemoteBusinessConnector> implemen
             return false;
         }
 
+        if (widget == null) {
+            Log.e(TAG, "Widget is null");
+            return false;
+        }
+
         if (!widget.update()) {
             Log.e(TAG, "Widget is updating: ", widget);
+            return false;
+        }
+
+        if (!mWidgetCache.contains(widget)) {
+            Log.e(TAG, "Widget is not in cache: ", widget);
             return false;
         }
 

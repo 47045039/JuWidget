@@ -309,6 +309,9 @@ public class WidgetServer {
      */
     public static final boolean attachWidgetView(Widget widget, WidgetView view) {
         Log.i(TAG, "attachWidgetView: ", widget, view);
+        if (widget == null || view == null) {
+            return false;
+        }
 
         ArrayList<WidgetView> views = sViews.get(widget);
         if (views == null) {
@@ -333,6 +336,9 @@ public class WidgetServer {
      */
     public static final boolean detachWidgetView(Widget widget, WidgetView view) {
         Log.i(TAG, "detachWidgetView: ", widget, view);
+        if (widget == null || view == null) {
+            return false;
+        }
 
         final ArrayList<WidgetView> views = sViews.get(widget);
         if (views == null || !views.contains(view)) {
@@ -345,12 +351,12 @@ public class WidgetServer {
     }
 
     /**
-     * 根据id查询Product信息
+     * 根据id查询IWidgetManager
      *
      * @param pid 产品ID
      * @return
      */
-    static final IWidgetManager findWidgetManager(String pid) {
+    public static final IWidgetManager findWidgetManager(String pid) {
         if (pid == null || TextUtils.isEmpty(pid)) {
             Log.e(TAG, "findWidgetManager invalid args: ", pid);
             return null;

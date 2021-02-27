@@ -40,6 +40,24 @@ public class WidgetContainer extends FrameLayout {
         }
     }
 
+    @Override
+    public void onViewAdded(View child) {
+        super.onViewAdded(child);
+        if (child instanceof WidgetHostView) {
+            final WidgetHostView host = (WidgetHostView) child;
+            WidgetServer.attachWidgetView(host.getWidget(), host.getWidgetView());
+        }
+    }
+
+    @Override
+    public void onViewRemoved(View child) {
+        super.onViewRemoved(child);
+        if (child instanceof WidgetHostView) {
+            final WidgetHostView host = (WidgetHostView) child;
+            WidgetServer.detachWidgetView(host.getWidget(), host.getWidgetView());
+        }
+    }
+
     /**
      * 进入、退出编辑模式
      *
@@ -78,7 +96,6 @@ public class WidgetContainer extends FrameLayout {
             return false;
         }
 
-        WidgetServer.attachWidgetView(widget, view);
         addView(host, getLayoutPrams(findBestPosition(widget), widget.getCellSpan()));
         return true;
     }
@@ -88,7 +105,6 @@ public class WidgetContainer extends FrameLayout {
             return false;
         }
 
-        WidgetServer.detachWidgetView(host.getWidget(), host.getWidgetView());
         removeView(host);
         return host.detach();
     }
@@ -120,9 +136,9 @@ public class WidgetContainer extends FrameLayout {
 
     private LayoutParams getLayoutPrams(Point pos, Point span) {
         // TODO：根据Widget position和span，计算合适的坐标
-        final LayoutParams params = new LayoutParams(pos.x * 100, pos.y * 100);
-        params.width = span.x * 200;
-        params.height = span.y * 200;
+        final LayoutParams params = new LayoutParams(span.x * 160, span.y * 160);
+        params.leftMargin = pos.x * 10;
+        params.topMargin = pos.y * 10;
         return params;
     }
 }
