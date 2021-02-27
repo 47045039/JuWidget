@@ -3,11 +3,17 @@ package com.ju.demo.business;
 import android.os.Handler;
 
 import com.ju.widget.connector.AbsBusiness;
+import com.ju.widget.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class DemoBusiness extends AbsBusiness {
+
+    private static final String TAG = "DemoBusiness";
+
+    // launcher应用的包名，startService需要指定包名
+    public static final String REMOTE_PACKAGE = "com.ju.demo.launcher";
 
     private static final String PRODUCT_ID = "DemoBusinessID";
     private static final int VERSION = 2;
@@ -15,26 +21,41 @@ public class DemoBusiness extends AbsBusiness {
     private final Handler mHandler = new Handler();
 
     public DemoBusiness() {
-        super("DemoBusiness", PRODUCT_ID, VERSION);
+        super(TAG, REMOTE_PACKAGE, PRODUCT_ID, VERSION);
         testConnector();
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        Log.e(TAG, "onCreate: ================: ", this);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.e(TAG, "onDestroy: ================: ", this);
     }
 
     private void testConnector() {
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
+                Log.e(TAG, "testConnector: ================ 1111");
+
                 notifyWidgetAdded("DemoBusiness_Widget_1");
                 notifyWidgetAdded("DemoBusiness_Widget_2");
                 notifyWidgetAdded("DemoBusiness_Widget_3");
 
                 notifyWidgetListAdded("DemoBusiness_Widget_4|DemoBusiness_Widget_5|DemoBusiness_Widget_6");
             }
-        }, 2000);
-
+        }, 5000);
 
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
+                Log.e(TAG, "testConnector: ================ 2222");
+
                 notifyWidgetRemoved("DemoBusiness_Widget_2");
                 notifyWidgetListRemoved("DemoBusiness_Widget_5|DemoBusiness_Widget_6");
             }
