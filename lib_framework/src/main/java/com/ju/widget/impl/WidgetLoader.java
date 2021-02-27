@@ -1,13 +1,22 @@
 package com.ju.widget.impl;
 
 import android.content.Context;
+import android.content.res.AssetManager;
 import android.graphics.Bitmap;
+import android.text.TextUtils;
 
 import com.ju.widget.api.Product;
 import com.ju.widget.api.Widget;
 import com.ju.widget.api.WidgetData;
 import com.ju.widget.impl.cache.CachedWidget;
+import com.ju.widget.interfaces.IWidgetManager;
+import com.ju.widget.util.Log;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 /**
@@ -22,6 +31,8 @@ import java.util.ArrayList;
  * 保存widget数据；
  */
 public class WidgetLoader {
+
+    private static final String TAG = "WidgetLoader";
 
     private static Context sContext;
 
@@ -39,23 +50,47 @@ public class WidgetLoader {
     }
 
     private static final void loadWidgetManager(Context context) {
-        Product edu = new Product("1", "教育", "教育Description");
-        String eduManager = "com.ju.widget.edu.EduWidgetManager";
-        WidgetServer.registerProduct(edu, new WidgetManagerProxy(context, edu, eduManager));
+        final AssetManager assets = context.getAssets();
+        try {
+            JSONObject object = null;
+            Product product = null;
+            IWidgetManager manager = null;
 
-        Product vod = new Product("2", "视频", "视频Description");
-        String vodManager = "com.ju.widget.vod.VodWidgetManager";
-        WidgetServer.registerProduct(vod, new WidgetManagerProxy(context, vod, vodManager));
+            for (String file : assets.list("widget")) {
+                object = readConfig(assets, file);
+
+                Log.i(TAG, "read config: ", file, object);
+
+                if (object == null) {
+                    continue;
+                }
+
+                product = readProduct(object);
+
+                if (product == null) {
+                    continue;
+                }
+
+                manager = readManager(context, product, object);
+                if (manager == null) {
+                    continue;
+                }
+
+                WidgetServer.registerProduct(product, manager);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private static final void readAllWidget(Context context) {
         // TODO：从数据库中读取所有缓存的widget信息
-        Product edu = new Product("1", "教育", "教育Description");
+        Product edu = new Product(1, "1", "教育", "教育Description");
         ArrayList<Widget> eduList = new ArrayList<>(2);
         eduList.add(new CachedWidget("CachedWidget_1", "1", 1, 1));
         eduList.add(new CachedWidget("CachedWidget_2", "1", 1, 2));
 
-        Product vod = new Product("2", "视频", "视频Description");
+        Product vod = new Product(1, "2", "视频", "视频Description");
         ArrayList<Widget> vodList = new ArrayList<>(2);
         vodList.add(new CachedWidget("CachedWidget_VOD_1", "2", 1, 1));
         vodList.add(new CachedWidget("CachedWidget_VOD_2", "2", 1, 2));
@@ -98,6 +133,67 @@ public class WidgetLoader {
 
     public static final Bitmap readWidgetBackground(WidgetData data) {
         // TODO：读取widget view的缩略图
+        return null;
+    }
+
+    private static final JSONObject readConfig(AssetManager assets, String file) {
+        InputStream is = null;
+        byte[] buffer = null;
+        try {
+            is = assets.open(file);
+            buffer = new byte[is.available()];
+            is.read(buffer);
+
+            return new JSONObject(new String(buffer));
+        } catch (IOException | JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private static final Product readProduct(JSONObject obj) {
+        if (obj == null) {
+            return null;
+        }
+
+        try {
+            obj = obj.getJSONObject("product");
+            if (obj == null) {
+                return null;
+            }
+
+            return new Product(obj.getInt("version"),
+                    obj.getString("id"),
+                    obj.getString("title"),
+                    obj.getString("description"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    private static final IWidgetManager readManager(Context ctx, Product product, JSONObject obj) {
+        if (obj == null) {
+            return null;
+        }
+
+        try {
+            obj = obj.getJSONObject("manager");
+            if (obj == null) {
+                return null;
+            }
+
+            String clazz = obj.getString("class");
+            if (TextUtils.isEmpty(clazz)) {
+                return null;
+            }
+
+            return new WidgetManagerProxy(ctx, product, clazz);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
         return null;
     }
 

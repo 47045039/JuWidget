@@ -94,6 +94,10 @@ public abstract class Widget<D extends WidgetData, V extends WidgetView> impleme
         return Tools.isVertical(mOrientation);
     }
 
+    public int getUpdateInterval() {
+        return mUpdateInterval;
+    }
+
     public boolean isMatch(Query query) {
         if (query == null) {
             return true;
