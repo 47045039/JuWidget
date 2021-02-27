@@ -1,8 +1,8 @@
 {
   "product": {
-    "id": "demo_business",
-    "title": "demo_business_title",
-    "description": "demo_business_description"
+    "id": "DemoBusinessProductID",
+    "title": "Demo Business Product Title",
+    "description": "Demo Business Product Description"
   },
   "manager": {
     "class": "com.ju.demo.business.aar.DemoWidgetManager"

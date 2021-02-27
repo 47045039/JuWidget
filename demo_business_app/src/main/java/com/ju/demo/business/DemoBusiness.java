@@ -15,7 +15,8 @@ public class DemoBusiness extends AbsBusiness {
     // launcher应用的包名，startService需要指定包名
     public static final String REMOTE_PACKAGE = "com.ju.demo.launcher";
 
-    private static final String PRODUCT_ID = "DemoBusinessID";
+    // 必须和业务aar模块的assets/widget里配置的product信息一致
+    private static final String PRODUCT_ID = "DemoBusinessProductID";
     private static final int VERSION = 2;
 
     private final Handler mHandler = new Handler();
