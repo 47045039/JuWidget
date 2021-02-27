@@ -31,28 +31,9 @@ public class Connector {
     public static final int CMD_INVALID = -1;
 
     /**
-     * 远端业务的命令常量定义
-     */
-    public static final int CMD_UPDATE_WIDGET_DATA = 1001;
-
-    /**
      * 无效的Action
      */
     public static final int ACT_INVALID = -1;
-
-    /**
-     * WidgetService收到的Intent数据中的Action常量定义
-     */
-    public static final int ACT_ADD_WIDGET = 2001;
-    public static final int ACT_REMOVE_WIDGET = 2002;
-    public static final int ACT_ADD_WIDGET_LIST = 2003;
-    public static final int ACT_REMOVE_WIDGET_LIST = 2004;
-
-    /**
-     * Widget数据发生变化的Action常量定义
-     */
-    public static final int ACT_UPDATE_WIDGET_DATA = 2101;
-
 
     public static final String getPackage(Intent intent) {
         return intent.getStringExtra(KEY_PACKAGE);

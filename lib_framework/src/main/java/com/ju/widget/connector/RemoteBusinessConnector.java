@@ -4,15 +4,18 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.ju.widget.api.Widget;
+import com.ju.widget.interfaces.connector.Connector;
 import com.ju.widget.interfaces.connector.IRemoteBusinessConnector;
 
 public class RemoteBusinessConnector implements IRemoteBusinessConnector {
 
     private final Context mContext;
+    private final String mPackage;
     private final String mIntentAction;
 
     public RemoteBusinessConnector(Context ctx, String pkg) {
         mContext = ctx.getApplicationContext();
+        mPackage = pkg;
         mIntentAction = INTENT_ACTION_PREFIX + pkg;
     }
 
@@ -23,8 +26,11 @@ public class RemoteBusinessConnector implements IRemoteBusinessConnector {
      */
     public void notifyUpdateWidgetData(Widget widget) {
         final Intent intent = new Intent(mIntentAction);
-        intent.putExtra(KEY_COMMAND, CMD_UPDATE_WIDGET_DATA);
-        intent.putExtra(KEY_PARAMS, widget.getID());
+        Connector.putPackage(intent, mPackage);
+        Connector.putCommand(intent, CMD_UPDATE_WIDGET_DATA);
+        Connector.putProductId(intent, widget.getProductID());
+        Connector.putWidgetId(intent, widget.getID());
+        Connector.putParams(intent, widget.getID());
         sendCommand(intent);
     }
 
