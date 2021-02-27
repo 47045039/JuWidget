@@ -51,7 +51,7 @@ public class WidgetServer {
         }
 
         if (sProducts.containsKey(product)) {
-            Log.i(TAG, "registerProduct with duplicate args: ", product, manager);
+            Log.w(TAG, "registerProduct with duplicate args: ", product, manager);
             return true;
         }
 
@@ -140,7 +140,7 @@ public class WidgetServer {
 
         final ArrayList<Widget> widgets = sWidgets.get(product);
         if (widgets == null || !widgets.contains(widget)) {
-            Log.i(TAG, "unregisterWidget with empty cache: ", product);
+            Log.w(TAG, "unregisterWidget with empty cache: ", product);
             return false;
         }
 
@@ -186,7 +186,7 @@ public class WidgetServer {
 
         for (int i = list.size() - 1; i >= 0; i--) {
             if (widgets.contains(list.get(i))) {
-                Log.i(TAG, "registerWidget with cache: ", product, list.get(i));
+                Log.w(TAG, "registerWidget with cache: ", product, list.get(i));
                 list.remove(i);
             }
         }

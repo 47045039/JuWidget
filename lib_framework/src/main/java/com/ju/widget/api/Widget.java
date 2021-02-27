@@ -134,9 +134,9 @@ public abstract class Widget<D extends WidgetData, V extends WidgetView> impleme
             return true;
         }
 
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
+//        if (o == null || getClass() != o.getClass()) {
+//            return false;
+//        }
 
         final Widget<?, ?> widget = (Widget<?, ?>) o;
         return Objects.equals(mID, widget.mID);
@@ -145,6 +145,18 @@ public abstract class Widget<D extends WidgetData, V extends WidgetView> impleme
     @Override
     public int hashCode() {
         return Objects.hash(mID);
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("Widget{");
+        sb.append("mID='").append(mID).append('\'');
+        sb.append(", mProductID='").append(mProductID).append('\'');
+        sb.append(", mOrientation=").append(mOrientation);
+        sb.append(", mUpdateInterval=").append(mUpdateInterval);
+        sb.append(", mUpdating=").append(mUpdating);
+        sb.append('}');
+        return sb.toString();
     }
 
     @Override

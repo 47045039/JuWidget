@@ -192,7 +192,7 @@ public abstract class WidgetManager<C extends IRemoteBusinessConnector> implemen
     protected final void onRemoveWidget(IWidgetCallback callback, Widget widget) {
         if (widget != null) {
             mWidgetCache.remove(widget.getID());
-            callback.onAddWidget(mProduct, widget);
+            callback.onRemoveWidget(mProduct, widget);
         }
     }
 
