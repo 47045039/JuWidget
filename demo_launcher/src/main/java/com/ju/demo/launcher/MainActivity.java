@@ -14,6 +14,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     private static final String TAG = "DemoLauncherActivity";
 
+    // TODO：业务调试时，可改为实际的产品ID和Widget ID
     private static final String PRODUCT_ID = "DemoBusinessProductID";
     private static final String WIDGET_ID = "DemoBusiness_Widget_1";
 

@@ -1,0 +1,48 @@
+该项目共分为以下几个模块：
+1、lib_base：定义两端（widget框架、业务应用/模块）通信用的接口和常量，日志工具类；
+2、lib_framework：widget框架，集成在launcher应用中，依赖lib_base；
+3、lib_business：业务模块的工具，集成在业务应用/模块中，依赖lib_base；
+4、lib_leanlauncher：无用模块，无需关注；
+5、demo_launcher：首页launcher演示demo，用于演示添加、删除、展示、更新widget；
+                  依赖lib_base、lib_framework、demo_business_aar；
+6、demo_business_aar：业务widget的实现，集成在launcher应用中，包含业务Widget的定义、数据、界面、管理；
+                      依赖lib_framework中的connector模块和远端业务应用/模块通信；
+7、demo_business_app：业务widget对应的远端app，用于演示widget的后端支持；
+                      依赖lib_business和widget框架进行两端通信；
+
+
+widget业务开发，必须关注demo_business_aar和demo_business_app：
+1、从aar里发送的命令，在到app端解析；
+2、从app发送的数据，在aar端解析；
+3、注意aar和app的版本不一致时，两端数据处理的兼容性；
+4、Widget（widget信息，注意id的唯一性）、WidgetView（界面展示）、WidgetData（数据）；
+5、DemoWidgetManager（widget管理的实现）；
+6、Widget配置：assets/widget/demo_business_widget.json；注意产品id的唯一性；
+
+
+widget框架开发，必须关注lib_base、lib_framework、lib_business：
+1、两端数据通信：目前使用的是IntentService，如果要调整，需要更新lib_business和lib_framework的connector模块；
+                具体实现类是WidgetService（launcher端）和AbsBusiness（业务端）；
+2、框架初始化：WidgetEnv、WidgetLoader、WiderServer；
+3、框架缓存：WidgetLoader、WiderServer；
+4、Widget管理的基类：WidgetManager
+5、Widget布局和展示：WidgetContainer、WidgetHostView、WidgetView；
+
+
+launcher开发，必须关注lib_base、lib_framework；
+launcher中需要集成demo_business_aar；
+
+
+目前还缺少的功能：
+1、Widget点击展开：影响JUUI 7.0，不影响X7G首页；
+2、Widget数据的定时刷新：框架层未实现定时刷新，可先主动更新数据（demo里点击UPDAET按钮）；
+3、Widget信息和数据的缓存：还未对接到数据库；
+4、WidgetContainer的编辑模式、自动布局、补位、缓存等；
+
+
+调试须注意：
+1、因IntentService的兼容性问题，需要使用Android 25及以下版本的环境；
+2、编译并安装demo_launcher；
+3、编译并安装demo_business_app；
+4、运行demo_launcher，点击ADD按钮添加widget到界面，点击REMOVE按钮删除所有widget，点击UPDATE按钮强制更新数据；
+
