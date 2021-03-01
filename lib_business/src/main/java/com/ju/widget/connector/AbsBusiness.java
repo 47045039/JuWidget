@@ -16,16 +16,23 @@ public abstract class AbsBusiness extends IntentService {
 
     private static final String TAG = "AbsBusiness";
 
+    protected final String mRemotePackage;                  // WidgetService所在应用的包名
     protected final String mProductID;                      // 产品类型
     protected final int mVersion;                           // 本地业务模块版本信息
 
-    protected final WidgetServiceConnector mWidgetService;  // 远端Widget服务通信接口
+    protected WidgetServiceConnector mWidgetService;        // 远端Widget服务通信接口
 
     public AbsBusiness(String name, String remotePackage, String productID, int version) {
         super(name);
+        mRemotePackage = remotePackage;
         mProductID = productID;
         mVersion = version;
-        mWidgetService = new WidgetServiceConnector(this, remotePackage);
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        mWidgetService = new WidgetServiceConnector(getApplicationContext(), mRemotePackage);
     }
 
     @Override
