@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 
 import com.ju.widget.api.WidgetHostView.WidgetClickListener;
+import com.ju.widget.impl.PopupWindow.OnDismissListener;
 import com.ju.widget.impl.WidgetServer;
 import com.ju.widget.util.Log;
 
@@ -16,9 +17,14 @@ import com.ju.widget.util.Log;
  * <p>
  * 需要实现Widget的自动布局、移位、补位、删除等逻辑；
  */
-public class WidgetContainer extends FrameLayout implements WidgetClickListener {
+public class WidgetContainer extends FrameLayout implements OnDismissListener, WidgetClickListener {
 
     private static final String TAG = "WidgetContainer";
+
+    private final Config mCellConfig = new Config();
+
+    // 菜单的外层封装
+    private WidgetMenuContainer mMenuContainer = null;
 
     private boolean mEditMode = false;
 
@@ -61,6 +67,11 @@ public class WidgetContainer extends FrameLayout implements WidgetClickListener 
     }
 
     @Override
+    public void onDismiss() {
+        // TODO:
+    }
+
+    @Override
     public void onHostClick(WidgetHostView host, Widget widget, WidgetView view) {
         if (widget == null) {
             return;
@@ -83,6 +94,13 @@ public class WidgetContainer extends FrameLayout implements WidgetClickListener 
     public void onHostLongClick(WidgetHostView host, Widget widget, WidgetView view) {
         if (!isEditMode()) {
             setEditMode(true);
+        }
+    }
+
+    public void setConfig(Config config) {
+        if (mCellConfig.set(config)) {
+            invalidate();
+            requestLayout();
         }
     }
 
@@ -167,19 +185,39 @@ public class WidgetContainer extends FrameLayout implements WidgetClickListener 
 
     private Point findBestPosition(Widget widget) {
         // TODO：根据当前布局和Widget span，查找合适的位置放置Widget
-        return new Point(1, 1);
+        return new Point(2, 0);
     }
 
     private LayoutParams getLayoutPrams(Point pos, Point span) {
         // TODO：根据Widget position和span，计算合适的坐标
-        final LayoutParams params = new LayoutParams(span.x * 160, span.y * 160);
-        params.leftMargin = pos.x * 10;
-        params.topMargin = pos.y * 10;
+        final LayoutParams params = new LayoutParams(span.x * mCellConfig.mCellWidth,
+                span.y * mCellConfig.mCellHeight);
+        params.leftMargin = pos.x * mCellConfig.mCellWidth;
+        params.topMargin = pos.y * mCellConfig.mCellHeight;
         return params;
     }
 
     private void showWidgetMenu(WidgetHostView host, Widget widget, WidgetMenuView menu) {
-        // TODO: 显示Widget关联的Menu菜单
+        final WidgetMenuContainer menuContainer = getMenuContainer();
+        menuContainer.setContentView(menu);
+
+        // TODO: 计算坐标和宽高
+        final Config config = mCellConfig;
+        final int w = getWidth() - 4 * config.mCellWidth;
+        final int h = getHeight() - 4 * config.mCellHeight;
+
+        menuContainer.setWidth(w);
+        menuContainer.setHeight(h);
+
+        // TODO: 动画效果
+        menuContainer.showAsDropDown(host, 0, 0);
+    }
+
+    private WidgetMenuContainer getMenuContainer() {
+        if (mMenuContainer == null) {
+            mMenuContainer = new WidgetMenuContainer(getContext(), this);
+        }
+        return mMenuContainer;
     }
 
 }
