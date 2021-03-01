@@ -21,16 +21,32 @@ public class WidgetEnv {
     private static final Handler sHandler = new Handler(sWorker.getLooper());
     private static volatile boolean sInited = false;
 
+    private static Context sHostContext;
+    private static Context sPluginContext;
+
     /**
      * 初始化接口
      *
-     * @param context
+     * @param hostContext  宿主Context，Widget框架位于宿主中
+     * @param pluginContext 插件Context，页面、aar等位于插件中
      */
-    public static final void init(Context context) {
+    public static final void init(Context hostContext, Context pluginContext) {
         if (!sInited) {
             sInited = true;
-            doInit(context.getApplicationContext());
+
+            sHostContext = hostContext;
+            sPluginContext = pluginContext;
+            doInit(pluginContext.getApplicationContext());
         }
+    }
+
+    public static final boolean canShowWidgetMenu() {
+        if (sHostContext == null) {
+            return false;
+        }
+
+        // TODO: 为了测试方便，默认总是可以展示Widget菜单
+        return true;//"com.jamdeo.tv.vod".equals(sHostContext.getPackageName());
     }
 
     private static final void doInit(Context context) {

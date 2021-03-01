@@ -1,6 +1,5 @@
 package com.ju.widget.impl;
 
-import android.content.Context;
 import android.text.TextUtils;
 
 import com.ju.widget.api.Product;
@@ -281,23 +280,6 @@ public class WidgetServer {
         }
 
         return false;
-    }
-
-    /**
-     * 创建Widget对应的WidgetView
-     *
-     * @param context context
-     * @param widget Widget信息
-     * @return
-     */
-    public static final WidgetView createWidgetView(Context context, Widget widget) {
-        final IWidgetManager manager = findWidgetManager(widget.getProductID());
-        if (manager != null) {
-            return manager.createWidgetView(context, widget);
-        } else {
-            Log.e(TAG, "Can not find IWidgetManager: ", widget);
-            return null;
-        }
     }
 
     /**

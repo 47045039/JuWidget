@@ -1,11 +1,9 @@
 package com.ju.widget.interfaces;
 
-import android.content.Context;
 import android.content.Intent;
 
 import com.ju.widget.api.Query;
 import com.ju.widget.api.Widget;
-import com.ju.widget.api.WidgetView;
 
 import java.util.ArrayList;
 
@@ -51,14 +49,5 @@ public interface IWidgetManager {
      * @return
      */
     boolean updateWidgetData(Widget widget);
-
-    /**
-     * 创建该Widget对应的View
-     *
-     * @param context context
-     * @param widget  widget信息
-     * @return
-     */
-    WidgetView createWidgetView(Context context, Widget widget);
 
 }

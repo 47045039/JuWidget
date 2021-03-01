@@ -20,11 +20,13 @@ public class WidgetHostView extends FrameLayout {
 
     private static final LayoutParams PARAMS = new LayoutParams(MATCH_PARENT, MATCH_PARENT);
 
+    private final Point mCellPosition = new Point(-1, -1);      // 所处位置的Cell坐标
     private final Point mEnlargeCellSpan = new Point(-1, -1);   // 扩展后的CellSpan
 
     private boolean mEditMode = false;
     private boolean mShowing = false;
 
+    private WidgetClickListener mClickListener;
     private Widget mWidget;
     private WidgetView mWidgetView;
 
@@ -53,6 +55,18 @@ public class WidgetHostView extends FrameLayout {
     }
 
     @Override
+    public void setOnClickListener(OnClickListener l) {
+        // 禁止外部设置OnClickListener
+        // super.setOnClickListener(l);
+    }
+
+    @Override
+    public void setOnLongClickListener(OnLongClickListener l) {
+        // 禁止外部设置OnLongClickListener
+        // super.setOnLongClickListener(l);
+    }
+
+    @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
@@ -60,6 +74,46 @@ public class WidgetHostView extends FrameLayout {
             // TODO: 绘制删除角标；
             // TODO: 焦点状态绘制方向图标
         }
+    }
+
+    @Override
+    public boolean performClick() {
+        if (mClickListener != null) {
+            mClickListener.onHostClick(this, mWidget, mWidgetView);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean performLongClick() {
+        if (mClickListener != null) {
+            mClickListener.onHostLongClick(this, mWidget, mWidgetView);
+        }
+        return true;
+    }
+
+    void setWidgetClickListener(WidgetClickListener l) {
+        mClickListener = l;
+    }
+
+    /**
+     * 设置当前所处位置的Cell坐标
+     */
+    boolean setCellPosition(int x, int y) {
+        final Point pos = mCellPosition;
+        if (pos.x == x && pos.y == y) {
+            return false;
+        } else {
+            pos.set(x, y);
+            return true;
+        }
+    }
+
+    /**
+     * 获取当前所处位置的Cell坐标
+     */
+    Point getCellPosition() {
+        return new Point(mCellPosition);
     }
 
     /**
@@ -177,6 +231,27 @@ public class WidgetHostView extends FrameLayout {
         mWidgetView = null;
         removeAllViews();
         return true;
+    }
+
+    /**
+     * WidgetHostView点击事件的封装
+     */
+    public interface WidgetClickListener {
+        /**
+         * 点击事件
+         *
+         * @param view
+         * @param widget
+         */
+        void onHostClick(WidgetHostView host, Widget widget, WidgetView view);
+
+        /**
+         * 长按事件
+         *
+         * @param view
+         * @param widget
+         */
+        void onHostLongClick(WidgetHostView host, Widget widget, WidgetView view);
     }
 
 }

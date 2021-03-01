@@ -1,5 +1,6 @@
 package com.ju.widget.api;
 
+import android.content.Context;
 import android.graphics.Point;
 import android.text.TextUtils;
 
@@ -14,18 +15,19 @@ import static com.ju.widget.api.Constants.ORIENTATION_MASK;
  *
  * @param <D> Widget数据
  * @param <V> Widget界面
+ * @param <M> Widget点击后展开的菜单
  */
-public abstract class Widget<D extends WidgetData, V extends WidgetView> implements Comparable<Widget> {
+public abstract class Widget<D extends WidgetData, V extends WidgetView, M extends WidgetMenuView> implements Comparable<Widget> {
 
     private static final int MIN_UPDATE_INTERVAL = 30 * 60 * 1000;  // 最小刷新间隔，30min
 
-    private final String mID;                   // Widget ID，保持全局唯一
-    private final String mProductID;            // Widget Product ID
-    private final Point mCellSpan;              // 跨度span
-    private final int mOrientation;             // 默认支持横向 + 纵向
-    private final int mUpdateInterval;          // 数据更新时间间隔，ms
+    protected final String mID;                 // Widget ID，保持全局唯一
+    protected final String mProductID;          // Widget Product ID
+    protected final Point mCellSpan;            // 跨度span
+    protected final int mOrientation;           // 默认支持横向 + 纵向
+    protected final int mUpdateInterval;        // 数据更新时间间隔，ms
 
-    private D mData;                            // 关联数据
+    protected D mData;                          // 关联数据
 
     private boolean mUpdating;                  // 是否正在刷新数据
     private long mUpdateTimeStamp;              // 数据更新时戳，ms
@@ -98,10 +100,6 @@ public abstract class Widget<D extends WidgetData, V extends WidgetView> impleme
         return mUpdateInterval;
     }
 
-    public D getData() {
-        return mData;
-    }
-
     public boolean isMatch(Query query) {
         if (query == null) {
             return true;
@@ -142,7 +140,7 @@ public abstract class Widget<D extends WidgetData, V extends WidgetView> impleme
 //            return false;
 //        }
 
-        final Widget<?, ?> widget = (Widget<?, ?>) o;
+        final Widget<?, ?, ?> widget = (Widget<?, ?, ?>) o;
         return Objects.equals(mID, widget.mID);
     }
 
@@ -194,5 +192,45 @@ public abstract class Widget<D extends WidgetData, V extends WidgetView> impleme
         mUpdating = false;
         mUpdateTimeStamp = System.currentTimeMillis();
     }
+
+    public D getData() {
+        return mData;
+    }
+
+    /**
+     * 创建该Widget对应的View
+     *
+     * @param context   context
+     * @param container 外层WidgetContainer
+     * @return
+     */
+    public abstract V createWidgetView(Context context, WidgetContainer container);
+
+    /**
+     * 创建该Widget对应的二级菜单
+     *
+     * @param context context
+     * @return
+     */
+    public abstract M createWidgetMenuView(Context context);
+
+    /**
+     * 执行跳转
+     *
+     * @param context context
+     */
+    public abstract boolean doJump(Context context);
+
+    /**
+     * 是否支持二级菜单；业务需要根据实际需求和当前数据，返回true/false；
+     * <p>
+     * 1、框架层判断到不是JUUI时，直接调用doJump跳转，不会调用该方法；
+     * 2、框架层判断到是JUUI时，将调用该方法；
+     * a: 该方法返回false时，外层框架直接调用doJump跳转；
+     * b: 该方法返回true时，外层框架将调用createWidgetMenuView，创建菜单界面并加入到View层级中;
+     *
+     * @return
+     */
+    public abstract boolean needShowMenuWhenClick();
 
 }

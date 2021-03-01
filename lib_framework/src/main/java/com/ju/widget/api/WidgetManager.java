@@ -184,9 +184,6 @@ public abstract class WidgetManager<C extends IRemoteBusinessConnector> implemen
      */
     protected abstract WidgetData parseWidgetData(int remoteVersion, Widget widget, String payload);
 
-    @Override
-    public abstract WidgetView createWidgetView(Context context, Widget widget);
-
     protected final Widget findWidget(String wid) {
         return mWidgetCache.get(wid);
     }

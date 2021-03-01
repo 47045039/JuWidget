@@ -7,14 +7,16 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
 
+import com.ju.widget.api.WidgetHostView.WidgetClickListener;
 import com.ju.widget.impl.WidgetServer;
+import com.ju.widget.util.Log;
 
 /**
  * Widget容器；
- *
+ * <p>
  * 需要实现Widget的自动布局、移位、补位、删除等逻辑；
  */
-public class WidgetContainer extends FrameLayout {
+public class WidgetContainer extends FrameLayout implements WidgetClickListener {
 
     private static final String TAG = "WidgetContainer";
 
@@ -58,6 +60,32 @@ public class WidgetContainer extends FrameLayout {
         }
     }
 
+    @Override
+    public void onHostClick(WidgetHostView host, Widget widget, WidgetView view) {
+        if (widget == null) {
+            return;
+        }
+
+        if (!WidgetEnv.canShowWidgetMenu() || !widget.needShowMenuWhenClick()) {
+            widget.doJump(getContext());
+        } else {
+            final WidgetMenuView menu = widget.createWidgetMenuView(getContext());
+            if (menu == null) {
+                Log.w(TAG, "Need show menu when click, but can not create WidgetMenuView: ", widget);
+                widget.doJump(getContext());
+            } else {
+                showWidgetMenu(host, widget, menu);
+            }
+        }
+    }
+
+    @Override
+    public void onHostLongClick(WidgetHostView host, Widget widget, WidgetView view) {
+        if (!isEditMode()) {
+            setEditMode(true);
+        }
+    }
+
     /**
      * 进入、退出编辑模式
      *
@@ -86,17 +114,21 @@ public class WidgetContainer extends FrameLayout {
 
     public boolean addWidget(Widget widget) {
         final Context context = getContext();
-        final WidgetView view = WidgetServer.createWidgetView(context, widget);
+        final WidgetView view = widget.createWidgetView(context, this);
         if (view == null) {
             return false;
         }
 
         final WidgetHostView host = new WidgetHostView(context);
+        final Point pos = findBestPosition(widget);
+        host.setCellPosition(pos.x, pos.y);
+        host.setWidgetClickListener(this);
+
         if (!host.attach(widget, view)) {
             return false;
         }
 
-        addView(host, getLayoutPrams(findBestPosition(widget), widget.getCellSpan()));
+        addView(host, getLayoutPrams(pos, widget.getCellSpan()));
         return true;
     }
 
@@ -117,7 +149,11 @@ public class WidgetContainer extends FrameLayout {
         WidgetServer.detachWidgetView(host.getWidget(), host.getWidgetView());
         host.detach();
 
-        final WidgetView view = WidgetServer.createWidgetView(getContext(), widget);
+        if (widget == null) {
+            return false;
+        }
+
+        final WidgetView view = widget.createWidgetView(getContext(), this);
         if (view == null) {
             return false;
         }
@@ -141,4 +177,9 @@ public class WidgetContainer extends FrameLayout {
         params.topMargin = pos.y * 10;
         return params;
     }
+
+    private void showWidgetMenu(WidgetHostView host, Widget widget, WidgetMenuView menu) {
+        // TODO: 显示Widget关联的Menu菜单
+    }
+
 }
