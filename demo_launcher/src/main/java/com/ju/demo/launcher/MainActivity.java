@@ -25,7 +25,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        WidgetEnv.init(this);
+        WidgetEnv.init(getApplicationContext(), getApplicationContext());
 
         setContentView(R.layout.activity_main);
         mContainer1 = findViewById(R.id.widget_container_1);

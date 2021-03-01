@@ -5,16 +5,13 @@ import android.os.Handler;
 
 import com.ju.demo.business.aar.widget1.DemoWidget1;
 import com.ju.demo.business.aar.widget1.DemoWidgetData1;
-import com.ju.demo.business.aar.widget1.DemoWidgetView1;
 import com.ju.demo.business.aar.widget2.DemoWidget2;
 import com.ju.demo.business.aar.widget2.DemoWidgetData2;
-import com.ju.demo.business.aar.widget2.DemoWidgetView2;
 import com.ju.widget.api.Constants;
 import com.ju.widget.api.Product;
 import com.ju.widget.api.Widget;
 import com.ju.widget.api.WidgetData;
 import com.ju.widget.api.WidgetManager;
-import com.ju.widget.api.WidgetView;
 import com.ju.widget.connector.RemoteBusinessConnector;
 import com.ju.widget.util.Log;
 
@@ -122,18 +119,6 @@ public class DemoWidgetManager extends WidgetManager<RemoteBusinessConnector> {
         return null;
     }
 
-    @Override
-    public WidgetView createWidgetView(Context context, Widget widget) {
-        // TODO: 根据实际情况创建WidgetView
-        if (widget instanceof DemoWidget1) {
-            return new DemoWidgetView1(context);
-        } else if (widget instanceof DemoWidget2) {
-            return new DemoWidgetView2(context);
-        } else {
-            return null;
-        }
-    }
-
     private final Widget randomWidget(String wid) {
         final Random random = new Random();
         if (wid.endsWith("1")) {
@@ -148,9 +133,9 @@ public class DemoWidgetManager extends WidgetManager<RemoteBusinessConnector> {
     }
 
     private final int randomSpan(Random random) {
-        int span = random.nextInt(3);
-        while (span == 0) {
-            span = random.nextInt(3);
+        int span = random.nextInt(4);
+        while (span < 1) {
+            span = random.nextInt(4);
         }
         return span;
     }
