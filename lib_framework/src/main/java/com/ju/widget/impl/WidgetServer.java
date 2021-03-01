@@ -322,8 +322,9 @@ public class WidgetServer {
         }
 
         if (!views.contains(view)) {
-            sViews.put(widget, views);
+            views.add(view);
         }
+
         return true;
     }
 
@@ -342,11 +343,16 @@ public class WidgetServer {
 
         final ArrayList<WidgetView> views = sViews.get(widget);
         if (views == null || !views.contains(view)) {
-            Log.w(TAG, "detachWidgetView failed: ", widget, view);
+            Log.w(TAG, "detachWidgetView with empty cache: ", widget, view);
             return true;
         }
 
         views.remove(view);
+
+        if (views.isEmpty()) {
+            sViews.remove(widget);
+        }
+
         return true;
     }
 
