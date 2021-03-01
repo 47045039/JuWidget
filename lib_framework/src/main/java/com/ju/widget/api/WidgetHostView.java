@@ -155,6 +155,7 @@ public class WidgetHostView extends FrameLayout {
 
         addView(view, -1, PARAMS);
 
+        view.setWidgetData(widget.getData());
         view.onVisibleChanged(mShowing);
 
         return true;
