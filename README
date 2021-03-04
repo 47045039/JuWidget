@@ -34,10 +34,9 @@ launcher中需要集成demo_business_aar；
 
 
 目前还缺少的功能：
-1、Widget点击展开：影响JUUI 7.0，不影响X7G首页；
-2、Widget数据的定时刷新：框架层未实现定时刷新，可先主动更新数据（demo里点击UPDAET按钮）；
-3、Widget信息和数据的缓存：还未对接到数据库；
-4、WidgetContainer的编辑模式、自动布局、补位、缓存等；
+1、Widget数据的定时刷新：框架层未实现定时刷新，可先主动更新数据（demo里点击UPDAET按钮）；
+2、Widget信息和数据的缓存：还未对接到数据库；
+3、WidgetContainer的编辑模式、自动布局、补位、缓存等；
 
 
 调试须注意：
