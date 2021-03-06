@@ -1,10 +1,9 @@
 package com.ju.widget.api;
 
 import android.content.Context;
-import android.os.Handler;
-import android.os.HandlerThread;
 
 import com.ju.widget.impl.WidgetLoader;
+import com.ju.widget.util.Tools;
 
 /**
  * @Author: liuqunshan@hisense.com
@@ -13,14 +12,7 @@ import com.ju.widget.impl.WidgetLoader;
  */
 public class WidgetEnv {
 
-    private static final HandlerThread sWorker = new HandlerThread("WidgetEnv");
-    static {
-        sWorker.start();
-    }
-
-    private static final Handler sHandler = new Handler(sWorker.getLooper());
     private static volatile boolean sInited = false;
-
     private static Context sHostContext;
     private static Context sPluginContext;
 
@@ -50,7 +42,7 @@ public class WidgetEnv {
     }
 
     private static final void doInit(Context context) {
-        sHandler.post(new Runnable() {
+        Tools.runOnWorkThread(new Runnable() {
             @Override
             public void run() {
                 WidgetLoader.doInit(context);
@@ -58,11 +50,4 @@ public class WidgetEnv {
         });
     }
 
-    public static final Handler getWorkHandler() {
-        return sHandler;
-    }
-
-    public static final Handler newWorkHandler() {
-        return new Handler(sWorker.getLooper());
-    }
 }

@@ -1,6 +1,7 @@
 package com.ju.widget.util;
 
 import android.os.Handler;
+import android.os.HandlerThread;
 import android.os.Looper;
 
 import static com.ju.widget.api.Constants.ORIENTATION_H;
@@ -8,23 +9,56 @@ import static com.ju.widget.api.Constants.ORIENTATION_V;
 
 public class Tools {
 
-    private static final Looper sMainLooper = Looper.getMainLooper();
-    private static final Handler sMainHandler = new Handler(sMainLooper);
+    private static final HandlerThread sWorker = new HandlerThread("WidgetEnv");
+    static {
+        sWorker.start();
+    }
+
+    private static final Handler sMainHandler = new Handler(Looper.getMainLooper());
+    private static final Handler sWorkHandler = new Handler(sWorker.getLooper());
 
     public static final boolean isMainThread() {
-        return sMainLooper == Looper.myLooper();
+        return Looper.getMainLooper() == Looper.myLooper();
+    }
+
+    public static final boolean isWorkThread() {
+        return sWorker.getLooper() == Looper.myLooper();
     }
 
     public static final void runOnMainThread(Runnable task) {
+        runOnMainThread(task, 0);
+    }
+
+    public static final void runOnMainThread(Runnable task, int delay) {
         if (task == null) {
             return;
         }
 
-        if (isMainThread()) {
+        if (delay <= 0 && isMainThread()) {
             task.run();
         } else {
-            sMainHandler.post(task);
+            sMainHandler.postDelayed(task, delay);
         }
+    }
+
+    public static final void runOnWorkThread(Runnable task) {
+        runOnWorkThread(task, 0);
+    }
+
+    public static final void runOnWorkThread(Runnable task, int delay) {
+        if (task == null) {
+            return;
+        }
+
+        if (delay <= 0 && isWorkThread()) {
+            task.run();
+        } else {
+            sWorkHandler.post(task);
+        }
+    }
+
+    public static final Handler newWorkHandler() {
+        return new Handler(sWorker.getLooper());
     }
 
     public static final boolean isHorizontal(int orientation) {
