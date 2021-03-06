@@ -53,7 +53,7 @@ public class WidgetContainer extends FrameLayout implements OnDismissListener, W
         super.onViewAdded(child);
         if (child instanceof WidgetHostView) {
             final WidgetHostView host = (WidgetHostView) child;
-            WidgetServer.attachWidgetView(host.getWidget(), host.getWidgetView());
+            WidgetServer.attachWidgetHostView(host.getWidget(), host);
         }
     }
 
@@ -62,7 +62,7 @@ public class WidgetContainer extends FrameLayout implements OnDismissListener, W
         super.onViewRemoved(child);
         if (child instanceof WidgetHostView) {
             final WidgetHostView host = (WidgetHostView) child;
-            WidgetServer.detachWidgetView(host.getWidget(), host.getWidgetView());
+            WidgetServer.detachWidgetHostView(host.getWidget(), host);
         }
     }
 
@@ -164,7 +164,7 @@ public class WidgetContainer extends FrameLayout implements OnDismissListener, W
             return false;
         }
 
-        WidgetServer.detachWidgetView(host.getWidget(), host.getWidgetView());
+        WidgetServer.detachWidgetHostView(host.getWidget(), host);
         host.detach();
 
         if (widget == null) {
@@ -177,7 +177,7 @@ public class WidgetContainer extends FrameLayout implements OnDismissListener, W
         }
 
         if (host.attach(widget, view)) {
-            WidgetServer.attachWidgetView(widget, view);
+            WidgetServer.attachWidgetHostView(widget, host);
         }
 
         return true;
@@ -198,6 +198,8 @@ public class WidgetContainer extends FrameLayout implements OnDismissListener, W
     }
 
     private void showWidgetMenu(WidgetHostView host, Widget widget, WidgetMenuView menu) {
+        menu.setData(widget.getData());
+
         final WidgetMenuContainer menuContainer = getMenuContainer();
         menuContainer.setContentView(menu);
 

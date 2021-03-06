@@ -192,6 +192,12 @@ public class WidgetHostView extends FrameLayout {
         return mWidgetView;
     }
 
+    public void setWidgetData(WidgetData data) {
+        if (mWidgetView != null) {
+            mWidgetView.setData(data);
+        }
+    }
+
     /**
      * 关联Widget、WidgetView信息，并将WidgetView加入到view层级
      */
@@ -209,7 +215,7 @@ public class WidgetHostView extends FrameLayout {
 
         addView(view, -1, PARAMS);
 
-        view.setWidgetData(widget.getData());
+        view.setData(widget.getData());
         view.onVisibleChanged(mShowing);
 
         return true;

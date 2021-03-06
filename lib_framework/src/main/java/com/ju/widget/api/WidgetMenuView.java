@@ -15,7 +15,11 @@ import android.widget.FrameLayout;
  *
  * 重写了dispatchKeyEvent以实现如上场景的多级菜单的BACK按键处理；
  */
-public class WidgetMenuView extends FrameLayout {
+public class WidgetMenuView<D extends WidgetData> extends FrameLayout {
+
+    private static final String TAG = "WidgetMenuView";
+
+    protected D mData;
 
     public WidgetMenuView(Context context) {
         super(context);
@@ -39,6 +43,25 @@ public class WidgetMenuView extends FrameLayout {
             return handleBack(event);
         }
         return super.dispatchKeyEvent(event);
+    }
+
+    /**
+     * 设置关联数据
+     *
+     * @param data
+     */
+    void setData(D data) {
+        mData = data;
+        onDataChanged(data);
+    }
+
+    /**
+     * 数据发生变化的回调
+     *
+     * @param data
+     */
+    protected void onDataChanged(D data) {
+
     }
 
     /**
@@ -96,4 +119,5 @@ public class WidgetMenuView extends FrameLayout {
         }
         return false;
     }
+
 }

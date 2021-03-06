@@ -5,7 +5,7 @@ import android.text.TextUtils;
 import com.ju.widget.api.Product;
 import com.ju.widget.api.Widget;
 import com.ju.widget.api.WidgetData;
-import com.ju.widget.api.WidgetView;
+import com.ju.widget.api.WidgetHostView;
 import com.ju.widget.interfaces.IWidgetCallback;
 import com.ju.widget.interfaces.IWidgetManager;
 import com.ju.widget.util.Log;
@@ -22,7 +22,7 @@ public class WidgetServer {
     private static final WidgetCallback sWidgetCallback = new WidgetCallback();
     private static final HashMap<Product, IWidgetManager> sProducts = new HashMap<>();
     private static final HashMap<Product, ArrayList<Widget>> sWidgets = new HashMap<>();
-    private static final HashMap<Widget, ArrayList<WidgetView>> sViews = new HashMap<>();
+    private static final HashMap<Widget, ArrayList<WidgetHostView>> sViews = new HashMap<>();
 
     /**
      * 注册产品分类信息
@@ -270,10 +270,10 @@ public class WidgetServer {
         }
 
 
-        final ArrayList<WidgetView> views = findWidgetView(widget.getID());
-        if (views != null) {
-            for (WidgetView view : views) {
-                view.setWidgetData(data);
+        final ArrayList<WidgetHostView> hosts = findWidgetHostView(widget.getID());
+        if (hosts != null) {
+            for (WidgetHostView host : hosts) {
+                host.setWidgetData(data);
             }
 
             return true;
@@ -286,25 +286,25 @@ public class WidgetServer {
      * 记录Widget和WidgetView的绑定关系
      *
      * @param widget Widget信息
-     * @param view   WidgetView
+     * @param host   WidgetHostView
      * @return
      */
-    public static final boolean attachWidgetView(Widget widget, WidgetView view) {
-        Log.i(TAG, "attachWidgetView: ", widget, view);
-        if (widget == null || view == null) {
+    public static final boolean attachWidgetHostView(Widget widget, WidgetHostView host) {
+        Log.i(TAG, "attachWidgetHostView: ", widget, host);
+        if (widget == null || host == null) {
             return false;
         }
 
-        ArrayList<WidgetView> views = sViews.get(widget);
-        if (views == null) {
-            views = new ArrayList<>(1);
-            views.add(view);
-            sViews.put(widget, views);
+        ArrayList<WidgetHostView> hosts = sViews.get(widget);
+        if (hosts == null) {
+            hosts = new ArrayList<>(1);
+            hosts.add(host);
+            sViews.put(widget, hosts);
             return true;
         }
 
-        if (!views.contains(view)) {
-            views.add(view);
+        if (!hosts.contains(host)) {
+            hosts.add(host);
         }
 
         return true;
@@ -314,24 +314,24 @@ public class WidgetServer {
      * 记录Widget和WidgetView的绑定关系
      *
      * @param widget Widget信息
-     * @param view   WidgetView
+     * @param host   WidgetHostView
      * @return
      */
-    public static final boolean detachWidgetView(Widget widget, WidgetView view) {
-        Log.i(TAG, "detachWidgetView: ", widget, view);
-        if (widget == null || view == null) {
+    public static final boolean detachWidgetHostView(Widget widget, WidgetHostView host) {
+        Log.i(TAG, "detachWidgetHostView: ", widget, host);
+        if (widget == null || host == null) {
             return false;
         }
 
-        final ArrayList<WidgetView> views = sViews.get(widget);
-        if (views == null || !views.contains(view)) {
-            Log.w(TAG, "detachWidgetView with empty cache: ", widget, view);
+        final ArrayList<WidgetHostView> hosts = sViews.get(widget);
+        if (hosts == null || !hosts.contains(host)) {
+            Log.w(TAG, "detachWidgetHostView with empty cache: ", widget, host);
             return true;
         }
 
-        views.remove(view);
+        hosts.remove(host);
 
-        if (views.isEmpty()) {
+        if (hosts.isEmpty()) {
             sViews.remove(widget);
         }
 
@@ -435,9 +435,9 @@ public class WidgetServer {
      * @param wid Widget ID
      * @return
      */
-    public static final ArrayList<WidgetView> findWidgetView(String wid) {
+    public static final ArrayList<WidgetHostView> findWidgetHostView(String wid) {
         if (wid == null || TextUtils.isEmpty(wid)) {
-            Log.e(TAG, "findWidgetView invalid args: ", wid);
+            Log.e(TAG, "findWidgetHostView invalid args: ", wid);
             return null;
         }
 
@@ -447,13 +447,13 @@ public class WidgetServer {
 //        }
 
         String tempID = null;
-        ArrayList<WidgetView> views = null;
-        for (Map.Entry<Widget, ArrayList<WidgetView>> entry : sViews.entrySet()) {
+        ArrayList<WidgetHostView> hosts = null;
+        for (Map.Entry<Widget, ArrayList<WidgetHostView>> entry : sViews.entrySet()) {
             tempID = entry.getKey().getID();
             if (TextUtils.equals(tempID, wid)) {
-                views = entry.getValue();
-                Log.d(TAG, "findWidgetView: ", wid, views);
-                return views;
+                hosts = entry.getValue();
+                Log.d(TAG, "findWidgetHostView: ", wid, hosts);
+                return hosts;
             }
         }
 

@@ -42,7 +42,12 @@ public abstract class WidgetView<D extends WidgetData> extends FrameLayout {
         super.onDetachedFromWindow();
     }
 
-    public void setWidgetData(D data) {
+    /**
+     * 设置关联数据
+     *
+     * @param data
+     */
+    void setData(D data) {
         mWidgetData = data;
         onDataChanged(data);
     }
