@@ -2,6 +2,7 @@ package com.ju.demo.business;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 
@@ -23,11 +24,20 @@ public class MainActivity extends Activity {
                 // 启动
                 Intent intent = new Intent(IWidgetServiceConnector.INTENT_ACTION);
                 intent.setPackage(DemoBusiness.REMOTE_PACKAGE);
-                startService(intent);
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    startForegroundService(intent);
+                } else {
+                    startService(intent);
+                }
 
                 intent = new Intent(IRemoteBusinessConnector.INTENT_ACTION_PREFIX + getPackageName());
                 intent.setPackage(getPackageName());
-                startService(intent);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    startForegroundService(intent);
+                } else {
+                    startService(intent);
+                }
             }
         });
 

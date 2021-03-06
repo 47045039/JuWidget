@@ -2,6 +2,7 @@ package com.ju.widget.connector;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 
 import com.ju.widget.interfaces.connector.Connector;
 import com.ju.widget.interfaces.connector.IWidgetServiceConnector;
@@ -98,7 +99,11 @@ public class WidgetServiceConnector implements IWidgetServiceConnector {
     @Override
     public void sendData(Intent intent) {
         Log.i(TAG, "sendData: ", intent);
-        mContext.startService(intent);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            mContext.startForegroundService(intent);
+        } else {
+            mContext.startService(intent);
+        }
     }
 
 }

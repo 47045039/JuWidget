@@ -1,7 +1,9 @@
 package com.ju.widget.impl;
 
 import android.app.IntentService;
+import android.app.Notification;
 import android.content.Intent;
+import android.os.Build;
 
 import com.ju.widget.interfaces.IWidgetManager;
 import com.ju.widget.interfaces.connector.Connector;
@@ -21,6 +23,24 @@ public class WidgetService extends IntentService {
 
     public WidgetService() {
         super(TAG);
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForeground(TAG.hashCode(), new Notification());
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            stopForeground(true);
+        }
     }
 
     @Override

@@ -13,6 +13,7 @@
             android:name="com.ju.widget.impl.WidgetService"
             android:enabled="true"
             android:exported="true"
+            android:foregroundServiceType="dataSync"
             android:permission="com.ju.widget.permission.WIDGET_SERVICE">
             <intent-filter>
                 <action android:name="com.ju.widget.intent.action.WIDGET_SERVICE" />
