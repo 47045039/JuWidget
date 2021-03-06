@@ -13,19 +13,19 @@ import java.util.ArrayList;
 public interface IWidgetManager {
 
     /**
+     * 设置回调
+     *
+     * @param callback
+     */
+    void setCallback(IWidgetCallback callback);
+
+    /**
      * 控制内部加载、刷新等耗时动作的执行；
      * 进程刚启动时，资源消耗很大，避免资源竞争导致系统应用卡顿；
      *
      * @param enable 是否开始运行
      */
     void setEnable(boolean enable);
-
-    /**
-     * 设置回调
-     *
-     * @param callback
-     */
-    void setCallback(IWidgetCallback callback);
 
     /**
      * 收到远端业务模块传递的数据

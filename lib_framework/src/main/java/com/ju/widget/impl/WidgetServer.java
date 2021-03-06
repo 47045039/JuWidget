@@ -58,9 +58,9 @@ public class WidgetServer {
 
         sProducts.put(product, manager);
 
+        manager.setCallback(sWidgetCallback);
         // TODO: 何时setEnable(true)？
         manager.setEnable(true);
-        manager.setCallback(sWidgetCallback);
         return true;
     }
 

@@ -90,8 +90,8 @@ public class WidgetManagerProxy implements IWidgetManager {
             constructor.setAccessible(true);
 
             mImpl = constructor.newInstance(mPluginContext, mProduct);
-            mImpl.setEnable(mEnable);
             mImpl.setCallback(mCallback);
+            mImpl.setEnable(mEnable);
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (NoSuchMethodException e) {

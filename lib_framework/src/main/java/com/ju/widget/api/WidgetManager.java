@@ -33,6 +33,7 @@ public abstract class WidgetManager<C extends IRemoteBusinessConnector> implemen
 
     protected IWidgetCallback mCallback;
     protected boolean mEnabled;
+    private boolean mFirstEnable = true;
 
     protected WidgetManager(Context ctx, Product product, int version) {
         mContext = ctx;
@@ -42,13 +43,18 @@ public abstract class WidgetManager<C extends IRemoteBusinessConnector> implemen
     }
 
     @Override
-    public void setEnable(boolean enable) {
-        mEnabled = enable;
+    public void setCallback(IWidgetCallback callback) {
+        mCallback = callback;
     }
 
     @Override
-    public void setCallback(IWidgetCallback callback) {
-        mCallback = callback;
+    public void setEnable(boolean enable) {
+        mEnabled = enable;
+
+        if (mFirstEnable) {
+            mFirstEnable = false;
+            onInitialized();
+        }
     }
 
     @Override
@@ -140,6 +146,16 @@ public abstract class WidgetManager<C extends IRemoteBusinessConnector> implemen
 
         return notifyUpdateWidgetData(widget);
     }
+
+    /**
+     * 初始化回调，第一次setEnable(true)时在主线程调用；
+     *
+     * 业务层可以在此时做初始化动作：
+     * 1、检查远端app是否存在；
+     * 2、初始化Widget信息（但不要刷新Widget数据，Widget数据在添加时刷新）；
+     *
+     */
+    protected abstract void onInitialized();
 
     /**
      * 创建和远端业务通信的接口对象
