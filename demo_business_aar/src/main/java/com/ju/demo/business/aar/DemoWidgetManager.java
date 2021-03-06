@@ -34,22 +34,17 @@ public class DemoWidgetManager extends WidgetManager<RemoteBusinessConnector> {
 
     public DemoWidgetManager(Context ctx, Product product) {
         super(ctx, product, VERSION);
-        testLocalWidget();
     }
 
-    private void testLocalWidget() {
-        mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Log.e(TAG, "test: ================ 1111: ", DemoWidgetManager.this);
-                onAddWidget(mCallback, parseWidget(1, "DemoBusiness_Widget_1"));
-                onAddWidget(mCallback, parseWidget(1, "DemoBusiness_Widget_2"));
-                onAddWidget(mCallback, parseWidget(1, "DemoBusiness_Widget_3"));
+    @Override
+    protected void onInitialized() {
+        Log.e(TAG, "test: ================ 1111: ", DemoWidgetManager.this);
+        onAddWidget(mCallback, parseWidget(1, "DemoBusiness_Widget_1"));
+        onAddWidget(mCallback, parseWidget(1, "DemoBusiness_Widget_2"));
+        onAddWidget(mCallback, parseWidget(1, "DemoBusiness_Widget_3"));
 
-                onAddWidgetList(mCallback, parseWidgetList(1,
-                        "DemoBusiness_Widget_4|DemoBusiness_Widget_5|DemoBusiness_Widget_6"));
-            }
-        }, 3000);
+        onAddWidgetList(mCallback, parseWidgetList(1,
+                "DemoBusiness_Widget_4|DemoBusiness_Widget_5|DemoBusiness_Widget_6"));
 
         mHandler.postDelayed(new Runnable() {
             @Override
@@ -62,7 +57,7 @@ public class DemoWidgetManager extends WidgetManager<RemoteBusinessConnector> {
                 onRemoveWidgetList(mCallback, parseWidgetList(1,
                         "DemoBusiness_Widget_5|DemoBusiness_Widget_6"));
             }
-        }, 6000);
+        }, 3000);
     }
 
     @Override
