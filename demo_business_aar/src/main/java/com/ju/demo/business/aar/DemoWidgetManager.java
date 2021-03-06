@@ -1,7 +1,6 @@
 package com.ju.demo.business.aar;
 
 import android.content.Context;
-import android.os.Handler;
 
 import com.ju.demo.business.aar.widget1.DemoWidget1;
 import com.ju.demo.business.aar.widget1.DemoWidgetData1;
@@ -14,6 +13,7 @@ import com.ju.widget.api.WidgetData;
 import com.ju.widget.api.WidgetManager;
 import com.ju.widget.connector.RemoteBusinessConnector;
 import com.ju.widget.util.Log;
+import com.ju.widget.util.Tools;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -30,8 +30,6 @@ public class DemoWidgetManager extends WidgetManager<RemoteBusinessConnector> {
 
     private static final int VERSION = 1;
 
-    private final Handler mHandler = new Handler();
-
     public DemoWidgetManager(Context ctx, Product product) {
         super(ctx, product, VERSION);
     }
@@ -46,7 +44,7 @@ public class DemoWidgetManager extends WidgetManager<RemoteBusinessConnector> {
         onAddWidgetList(mCallback, parseWidgetList(1,
                 "DemoBusiness_Widget_4|DemoBusiness_Widget_5|DemoBusiness_Widget_6"));
 
-        mHandler.postDelayed(new Runnable() {
+        Tools.runOnMainThread(new Runnable() {
             @Override
             public void run() {
                 Log.e(TAG, "test: ================ 2222: ", DemoWidgetManager.this);
