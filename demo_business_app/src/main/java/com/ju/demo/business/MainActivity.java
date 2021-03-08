@@ -6,6 +6,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 
+import com.ju.widget.interfaces.connector.Connector;
 import com.ju.widget.interfaces.connector.IRemoteBusinessConnector;
 import com.ju.widget.interfaces.connector.IWidgetServiceConnector;
 
@@ -24,20 +25,11 @@ public class MainActivity extends Activity {
                 // 启动
                 Intent intent = new Intent(IWidgetServiceConnector.INTENT_ACTION);
                 intent.setPackage(DemoBusiness.REMOTE_PACKAGE);
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    startForegroundService(intent);
-                } else {
-                    startService(intent);
-                }
+                Connector.startService(MainActivity.this, intent);
 
                 intent = new Intent(IRemoteBusinessConnector.INTENT_ACTION_PREFIX + getPackageName());
                 intent.setPackage(getPackageName());
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    startForegroundService(intent);
-                } else {
-                    startService(intent);
-                }
+                Connector.startService(MainActivity.this, intent);
             }
         });
 

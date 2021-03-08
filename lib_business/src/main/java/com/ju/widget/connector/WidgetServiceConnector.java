@@ -99,11 +99,7 @@ public class WidgetServiceConnector implements IWidgetServiceConnector {
     @Override
     public void sendData(Intent intent) {
         Log.i(TAG, "sendData: ", intent);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            mContext.startForegroundService(intent);
-        } else {
-            mContext.startService(intent);
-        }
+        Connector.startService(mContext, intent);
     }
 
 }

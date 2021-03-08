@@ -1,8 +1,18 @@
 package com.ju.widget.interfaces.connector;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
+
+import com.ju.widget.util.Log;
 
 public class Connector {
+
+    private static final String TAG = "Connector";
 
     /**
      * 框架WidgetService intent action
@@ -113,6 +123,68 @@ public class Connector {
 
     public static final void putPayload(Intent intent, String payload) {
         intent.putExtra(KEY_PAYLOAD, payload);
+    }
+
+    public static final void startService(Context context, Intent intent) {
+        Log.w(TAG, "startService: ", Build.VERSION.SDK_INT, context, intent);
+
+        // IntentService和startForegroundService有冲突，不能这样调用
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            context.startService(intent);
+        } else {
+            context.startForegroundService(intent);
+        }
+    }
+
+    public static final void startForeground(Service service) {
+        Log.w(TAG, "startForeground: ", Build.VERSION.SDK_INT, service);
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            return;
+        }
+
+        final NotificationManager nm = (NotificationManager) service.getSystemService(Context.NOTIFICATION_SERVICE);
+        if (nm == null) {
+            Log.e(TAG, "NotificationManager is null.");
+            return;
+        }
+
+        final String name = service.getClass().getName();
+        final Notification.Builder builder = new Notification.Builder(service.getApplicationContext())
+                .setContentTitle("通知").setSmallIcon(R.mipmap.widget_base_icon_notification);
+        // 解决8.0及以上系统的报错
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            final NotificationChannel channel = new NotificationChannel(name, name,
+                    NotificationManager.IMPORTANCE_HIGH);
+            channel.enableLights(false);
+            channel.setShowBadge(false);
+            channel.setLockscreenVisibility(Notification.VISIBILITY_SECRET);
+            nm.createNotificationChannel(channel);
+            builder.setChannelId(name);
+        }
+
+        try {
+            final Notification notification = builder.build();
+            service.startForeground(name.hashCode(), notification);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e(TAG, "startForeground failed:", e);
+        }
+    }
+
+    public static final void stopForeground(Service service) {
+        Log.w(TAG, "stopForeground: ", Build.VERSION.SDK_INT, service);
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            return;
+        }
+
+        try {
+            service.stopForeground(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e(TAG, "stopForeground failed:", e);
+        }
     }
 
 }

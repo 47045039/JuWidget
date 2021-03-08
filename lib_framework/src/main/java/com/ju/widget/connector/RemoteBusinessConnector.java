@@ -51,10 +51,6 @@ public class RemoteBusinessConnector implements IRemoteBusinessConnector {
     @Override
     public void sendCommand(Intent intent) {
         Log.i(TAG, "sendCommand: ", intent);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            mContext.startForegroundService(intent);
-        } else {
-            mContext.startService(intent);
-        }
+        Connector.startService(mContext, intent);
     }
 }
