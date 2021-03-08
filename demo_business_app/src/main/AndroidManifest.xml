@@ -7,11 +7,6 @@
         android:name="com.ju.widget.permission.WIDGET_BUSINESS.com.ju.demo.business"
         android:protectionLevel="normal" />
 
-    <!-- 此处使用的permission，必须和widget框架里定义的WidgetService permission一致 -->
-    <uses-permission android:name="com.ju.widget.permission.WIDGET_SERVICE" />
-
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -26,7 +21,7 @@
         </activity>
 
         <service
-            android:name="com.ju.demo.business.DemoBusiness"
+            android:name=".DemoBusiness"
             android:enabled="true"
             android:exported="true"
             android:foregroundServiceType="dataSync"

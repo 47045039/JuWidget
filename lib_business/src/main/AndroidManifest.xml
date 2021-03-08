@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.ju.widget.connector">
-
+    <!-- 此处使用的permission，必须和widget框架里定义的WidgetService permission一致 -->
+    <uses-permission android:name="com.ju.widget.permission.WIDGET_SERVICE" />
 </manifest>
