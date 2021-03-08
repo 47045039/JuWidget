@@ -176,9 +176,9 @@ public abstract class Widget<D extends WidgetData, V extends WidgetView, M exten
      * 设置数据更新标识
      */
     boolean update() {
-        if (mUpdating) {
-            return false;
-        }
+//        if (mUpdating) {
+//            return false;
+//        }
 
         mUpdating = true;
         return true;
