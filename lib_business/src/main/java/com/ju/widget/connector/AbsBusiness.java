@@ -66,6 +66,9 @@ public abstract class AbsBusiness extends IntentService {
         Log.i(TAG, "onHandleIntent: ", pkg, remoteVersion, command, pid, wid, params);
 
         switch (command) {
+            case IRemoteBusinessConnector.CMD_QUERY_ALL_WIDGET:
+                queryAllWidget(remoteVersion, pid, wid, params);
+                return;
             case IRemoteBusinessConnector.CMD_UPDATE_WIDGET_DATA:
                 updateWidgetData(remoteVersion, pid, wid, params);
                 return;
@@ -93,7 +96,25 @@ public abstract class AbsBusiness extends IntentService {
     }
 
     /**
-     * 根据业务需求，实现异步更新Widget数据的逻辑
+     * 查询所有的业务Widget信息；
+     *
+     * 业务Widget aar里的WidgetManager只能维护静态的Widget信息；
+     * 动态Widget信息需要远端业务主动上报，比如联系人Widget；
+     *
+     * 在Launcher启动Widget框架并加载业务WidgetManager后，需要通过
+     * WidgetManager向远端App查询所有的动态Widget信息；
+     *
+     * @param remoteVersion 对端业务模块的版本号
+     * @param pid           Product ID
+     * @param wid           Widget ID
+     * @param params        其它参数
+     */
+    protected abstract void queryAllWidget(int remoteVersion, String pid, String wid, String params);
+
+    /**
+     * 根据业务需求，实现异步更新Widget数据的逻辑；
+     *
+     * 注意：业务必须回复该信息，即使没有查询到数据；
      *
      * @param remoteVersion 对端业务模块的版本号
      * @param pid           Product ID

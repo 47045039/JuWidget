@@ -20,7 +20,8 @@ public interface IRemoteBusinessConnector {
     /**
      * 远端业务的命令常量定义
      */
-    int CMD_UPDATE_WIDGET_DATA = 1001;
+    int CMD_QUERY_ALL_WIDGET = 1001;        // 查询所有的Widget信息
+    int CMD_UPDATE_WIDGET_DATA = 1101;      // 更新Widget数据
 
     /**
      * 发送命令到远端业务模块
