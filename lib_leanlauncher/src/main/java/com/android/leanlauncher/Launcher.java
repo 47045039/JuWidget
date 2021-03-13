@@ -53,8 +53,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.StrictMode;
 import android.os.SystemClock;
-import android.support.v4.util.ArrayMap;
 import android.text.method.TextKeyListener;
+import android.util.ArrayMap;
 import android.util.Log;
 import android.view.HapticFeedbackConstants;
 import android.view.LayoutInflater;
@@ -1578,10 +1578,14 @@ public class Launcher extends Activity
             } else {
                 showOverviewMode(true);
             }
+
+            return;
         } else if (mWorkspace.isInOverviewMode()) {
             mWorkspace.exitOverviewMode(true);
+            return;
         } else {
             mWorkspace.exitWidgetResizeMode();
+            super.onBackPressed();
         }
     }
 

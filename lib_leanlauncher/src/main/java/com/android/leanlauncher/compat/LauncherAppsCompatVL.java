@@ -24,7 +24,7 @@ import android.content.pm.LauncherApps;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.UserHandle;
-import android.support.v4.util.ArrayMap;
+import android.util.ArrayMap;
 
 import java.util.ArrayList;
 import java.util.Collections;

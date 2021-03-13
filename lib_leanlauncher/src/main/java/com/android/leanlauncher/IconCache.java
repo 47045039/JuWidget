@@ -34,8 +34,8 @@ import android.graphics.drawable.Drawable;
 import android.os.SystemClock;
 import android.os.UserHandle;
 import android.preference.PreferenceManager;
-import android.support.v4.util.ArrayMap;
 import android.text.TextUtils;
+import android.util.ArrayMap;
 import android.util.Log;
 
 import com.android.leanlauncher.compat.LauncherActivityInfoCompat;

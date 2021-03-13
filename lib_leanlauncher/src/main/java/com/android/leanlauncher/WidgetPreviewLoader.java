@@ -40,7 +40,7 @@ import android.graphics.Shader;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
-import android.support.v4.util.ArrayMap;
+import android.util.ArrayMap;
 import android.util.Log;
 import com.android.leanlauncher.compat.AppWidgetManagerCompat;
 import com.android.leanlauncher.compat.UserHandleCompat;

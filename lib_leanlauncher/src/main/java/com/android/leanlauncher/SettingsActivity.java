@@ -26,9 +26,9 @@ import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
-import android.support.v4.util.ArrayMap;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
+import android.util.ArrayMap;
 import android.util.Log;
 import android.widget.TextView;
 

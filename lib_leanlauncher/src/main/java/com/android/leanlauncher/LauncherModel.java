@@ -39,7 +39,7 @@ import android.os.Process;
 import android.os.RemoteException;
 import android.os.SystemClock;
 import android.provider.BaseColumns;
-import android.support.v4.util.ArrayMap;
+import android.util.ArrayMap;
 import android.util.Log;
 
 import com.android.leanlauncher.compat.AppWidgetManagerCompat;

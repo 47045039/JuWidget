@@ -43,8 +43,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.IBinder;
-import android.support.v4.util.ArrayMap;
-import android.support.v4.view.ViewCompat;
+import android.util.ArrayMap;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Display;
@@ -333,7 +332,7 @@ public class Workspace extends ViewGroup
         CellLayout cl = ((CellLayout) child);
         cl.setOnInterceptTouchListener(this);
         cl.setClickable(true);
-        cl.setImportantForAccessibility(ViewCompat.IMPORTANT_FOR_ACCESSIBILITY_NO);
+        cl.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_NO);
     }
 
     @Override
@@ -943,8 +942,8 @@ public class Workspace extends ViewGroup
 
     private void updateAccessibilityFlags() {
         int accessible = mState == State.NORMAL ?
-                ViewCompat.IMPORTANT_FOR_ACCESSIBILITY_YES :
-                ViewCompat.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS;
+                View.IMPORTANT_FOR_ACCESSIBILITY_YES :
+                View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS;
         setImportantForAccessibility(accessible);
     }
 

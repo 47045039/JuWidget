@@ -25,7 +25,7 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Point;
 import android.os.Build;
-import android.support.v4.util.ArrayMap;
+import android.util.ArrayMap;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
