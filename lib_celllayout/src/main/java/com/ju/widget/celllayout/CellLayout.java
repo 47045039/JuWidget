@@ -31,11 +31,9 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.os.Parcelable;
-import android.support.v4.util.ArrayMap;
+import android.util.ArrayMap;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.util.SparseArray;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewDebug;
@@ -43,6 +41,8 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LayoutAnimationController;
+
+import com.android.leanlauncher.InterruptibleInOutAnimator;
 
 import java.util.ArrayList;
 import java.util.Arrays;
