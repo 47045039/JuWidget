@@ -7,27 +7,27 @@ package com.ju.widget.impl;
  */
 public class CellAndSpan {
 
-    public int x, y;
+    public int cellX, cellY;
     public int spanX, spanY;
 
     public CellAndSpan() {
     }
 
-    public void copy(CellAndSpan copy) {
-        copy.x = x;
-        copy.y = y;
+    public void copyFrom(CellAndSpan copy) {
+        copy.cellX = cellX;
+        copy.cellY = cellY;
         copy.spanX = spanX;
         copy.spanY = spanY;
     }
 
-    public CellAndSpan(int x, int y, int spanX, int spanY) {
-        this.x = x;
-        this.y = y;
+    public CellAndSpan(int cellX, int cellY, int spanX, int spanY) {
+        this.cellX = cellX;
+        this.cellY = cellY;
         this.spanX = spanX;
         this.spanY = spanY;
     }
 
     public String toString() {
-        return "(" + x + ", " + y + ": " + spanX + ", " + spanY + ")";
+        return "(" + cellX + ", " + cellY + ": " + spanX + ", " + spanY + ")";
     }
 }

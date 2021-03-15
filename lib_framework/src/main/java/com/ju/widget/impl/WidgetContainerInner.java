@@ -163,4 +163,9 @@ public class WidgetContainerInner extends ViewGroup {
         lp.setup(mCellWidth, mCellHeight, mWidthGap, mHeightGap);
     }
 
+    void setupLayoutParams(View child) {
+        WidgetCellLayout.LayoutParams lp = (WidgetCellLayout.LayoutParams) child.getLayoutParams();
+        lp.setup(mCellWidth, mCellHeight, mWidthGap, mHeightGap);
+    }
+
 }

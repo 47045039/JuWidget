@@ -185,7 +185,7 @@ public class WidgetContainer extends WidgetCellLayout implements OnDismissListen
 
     private Point findBestPosition(Widget widget) {
         final int[] pos = new int[]{0, 0};
-        if (getVacantCell(pos, widget.mCellSpan.x, widget.mCellSpan.y)) {
+        if (findCellForSpan(pos, widget.mCellSpan.x, widget.mCellSpan.y)) {
             return new Point(pos[0], pos[1]);
         } else {
             // TODO: 扩充高度，并重新获取位置
