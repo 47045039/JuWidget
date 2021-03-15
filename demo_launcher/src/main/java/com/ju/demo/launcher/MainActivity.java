@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 
+import com.ju.widget.api.Config;
 import com.ju.widget.api.Widget;
 import com.ju.widget.api.WidgetContainer;
 import com.ju.widget.api.WidgetEnv;
@@ -30,6 +31,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
         setContentView(R.layout.activity_main);
         mContainer1 = findViewById(R.id.widget_container_1);
         mContainer2 = findViewById(R.id.widget_container_2);
+
+        mContainer1.setLayoutConfig(new Config(160, 160, 6, 8));
 
         findViewById(R.id.widget_edit_1).setOnClickListener(this);
         findViewById(R.id.widget_add_1).setOnClickListener(this);
