@@ -9,6 +9,7 @@ import android.widget.FrameLayout;
 
 import com.ju.widget.api.WidgetHostView.WidgetClickListener;
 import com.ju.widget.impl.PopupWindow.OnDismissListener;
+import com.ju.widget.impl.WidgetCellLayout;
 import com.ju.widget.impl.WidgetServer;
 import com.ju.widget.util.Log;
 
@@ -17,7 +18,7 @@ import com.ju.widget.util.Log;
  * <p>
  * 需要实现Widget的自动布局、移位、补位、删除等逻辑；
  */
-public class WidgetContainer extends FrameLayout implements OnDismissListener, WidgetClickListener {
+public class WidgetContainer extends WidgetCellLayout implements OnDismissListener, WidgetClickListener {
 
     private static final String TAG = "WidgetContainer";
 
@@ -97,11 +98,8 @@ public class WidgetContainer extends FrameLayout implements OnDismissListener, W
         }
     }
 
-    public void setConfig(Config config) {
-        if (mCellConfig.set(config)) {
-            invalidate();
-            requestLayout();
-        }
+    public void setLayoutConfig(Config config) {
+        super.setOriginCellConfig(config.mCellWidth, config.mCellHeight, config.mCellCountX, config.mCellCountY);
     }
 
     /**
@@ -146,7 +144,9 @@ public class WidgetContainer extends FrameLayout implements OnDismissListener, W
             return false;
         }
 
-        addView(host, getLayoutPrams(pos, widget.getCellSpan()));
+        final Point span = widget.getCellSpan();
+        final LayoutParams params = new LayoutParams(pos.x, pos.y, span.x, span.y);
+        addViewToCells(host, -1, -1, params, true);
         return true;
     }
 
@@ -184,17 +184,13 @@ public class WidgetContainer extends FrameLayout implements OnDismissListener, W
     }
 
     private Point findBestPosition(Widget widget) {
-        // TODO：根据当前布局和Widget span，查找合适的位置放置Widget
-        return new Point(2, 0);
-    }
-
-    private LayoutParams getLayoutPrams(Point pos, Point span) {
-        // TODO：根据Widget position和span，计算合适的坐标
-        final LayoutParams params = new LayoutParams(span.x * mCellConfig.mCellWidth,
-                span.y * mCellConfig.mCellHeight);
-        params.leftMargin = pos.x * mCellConfig.mCellWidth;
-        params.topMargin = pos.y * mCellConfig.mCellHeight;
-        return params;
+        final int[] pos = new int[]{0, 0};
+        if (getVacantCell(pos, widget.mCellSpan.x, widget.mCellSpan.y)) {
+            return new Point(pos[0], pos[1]);
+        } else {
+            // TODO: 扩充高度，并重新获取位置
+            return new Point(2, 0);
+        }
     }
 
     private void showWidgetMenu(WidgetHostView host, Widget widget, WidgetMenuView menu) {
