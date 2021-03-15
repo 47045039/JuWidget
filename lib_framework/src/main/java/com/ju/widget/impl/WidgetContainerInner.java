@@ -12,10 +12,10 @@ public class WidgetContainerInner extends ViewGroup {
 
     private static final String TAG = "CellLayoutChildren";
 
-//    private static final Paint PAINT = new Paint();
-//    static {
-//        PAINT.setColor(Color.BLACK);
-//    }
+    private static final Paint PAINT = new Paint();
+    static {
+        PAINT.setColor(Color.BLACK);
+    }
 
     private int mCellWidth;
     private int mCellHeight;
@@ -43,26 +43,26 @@ public class WidgetContainerInner extends ViewGroup {
     protected void dispatchDraw(Canvas canvas) {
         super.dispatchDraw(canvas);
 
-//        int startX, stopX, startY, stopY;
-//        for (int x = 0; x < mCountX; x ++) {
-//            startX = stopX = x * (mCellWidth + mWidthGap);
-//            startY = 0;
-//            stopY = getHeight();
-//            canvas.drawLine(startX, startY, stopX, stopY, PAINT);
-//
-//            startX = stopX = startX + mCellWidth;
-//            canvas.drawLine(startX, startY, stopX, stopY, PAINT);
-//        }
-//
-//        for (int y = 0; y < mCountY; y ++) {
-//            startY = stopY = y * (mCellHeight + mHeightGap);
-//            startX = 0;
-//            stopX = getWidth();
-//            canvas.drawLine(startX, startY, stopX, stopY, PAINT);
-//
-//            startY = stopY = startY + mCellHeight;
-//            canvas.drawLine(startX, startY, stopX, stopY, PAINT);
-//        }
+        int startX, stopX, startY, stopY;
+        for (int x = 0; x < mCountX; x ++) {
+            startX = stopX = x * (mCellWidth + mWidthGap);
+            startY = 0;
+            stopY = getHeight();
+            canvas.drawLine(startX, startY, stopX, stopY, PAINT);
+
+            startX = stopX = startX + mCellWidth;
+            canvas.drawLine(startX, startY, stopX, stopY, PAINT);
+        }
+
+        for (int y = 0; y < mCountY; y ++) {
+            startY = stopY = y * (mCellHeight + mHeightGap);
+            startX = 0;
+            stopX = getWidth();
+            canvas.drawLine(startX, startY, stopX, stopY, PAINT);
+
+            startY = stopY = startY + mCellHeight;
+            canvas.drawLine(startX, startY, stopX, stopY, PAINT);
+        }
     }
 
     @Override
