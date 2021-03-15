@@ -49,7 +49,6 @@ public class DemoWidgetManager extends WidgetManager<RemoteBusinessConnector> {
             public void run() {
                 Log.e(TAG, "test: ================ 2222: ", DemoWidgetManager.this);
 
-                onRemoveWidget(mCallback, parseWidget(1, "DemoBusiness_Widget_2"));
                 onRemoveWidget(mCallback, parseWidget(1, "DemoBusiness_Widget_3"));
 
                 onRemoveWidgetList(mCallback, parseWidgetList(1,
