@@ -7,7 +7,7 @@ android {
     buildToolsVersion "30.0.3"
 
     defaultConfig {
-        applicationId "com.ju.demo.launcher"
+        applicationId "com.hisense.widget.launcher"
         minSdkVersion 14
         targetSdkVersion 30
         versionCode 1
