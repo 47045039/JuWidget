@@ -18,7 +18,7 @@
 
 <resources>
 
-    <declare-styleable name="WidgetCellLayout">
+    <declare-styleable name="CellLayout">
         <attr name="cellWidth" format="dimension"  />
         <attr name="cellHeight" format="dimension"  />
         <attr name="cellCountX" format="integer" />

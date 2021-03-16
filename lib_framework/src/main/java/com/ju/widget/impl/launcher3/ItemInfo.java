@@ -1,4 +1,4 @@
-package com.ju.widget.impl;
+package com.ju.widget.impl.launcher3;
 
 import android.content.Intent;
 
@@ -82,9 +82,9 @@ public class ItemInfo {
      */
     int[] dropPos = null;
 
-    ItemInfo() {}
+    public ItemInfo() {}
 
-    ItemInfo(ItemInfo info) {
+    public ItemInfo(ItemInfo info) {
         copyFrom(info);
     }
 

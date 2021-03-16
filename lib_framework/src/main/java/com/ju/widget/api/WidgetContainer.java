@@ -5,12 +5,11 @@ import android.graphics.Canvas;
 import android.graphics.Point;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.FrameLayout;
 
 import com.ju.widget.api.WidgetHostView.WidgetClickListener;
 import com.ju.widget.impl.PopupWindow.OnDismissListener;
-import com.ju.widget.impl.WidgetCellLayout;
 import com.ju.widget.impl.WidgetServer;
+import com.ju.widget.impl.launcher3.CellLayout;
 import com.ju.widget.util.Log;
 
 /**
@@ -18,7 +17,7 @@ import com.ju.widget.util.Log;
  * <p>
  * 需要实现Widget的自动布局、移位、补位、删除等逻辑；
  */
-public class WidgetContainer extends WidgetCellLayout implements OnDismissListener, WidgetClickListener {
+public class WidgetContainer extends CellLayout implements OnDismissListener, WidgetClickListener {
 
     private static final String TAG = "WidgetContainer";
 

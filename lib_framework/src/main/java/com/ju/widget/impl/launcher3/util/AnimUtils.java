@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ju.widget.util;
+package com.ju.widget.impl.launcher3.util;
 
 import android.animation.Animator;
 import android.animation.Animator.AnimatorListener;
@@ -22,6 +22,8 @@ import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
+import android.os.Build;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.ViewTreeObserver;
@@ -132,6 +134,7 @@ public class AnimUtils {
         return anim;
     }
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public static Animator createCircularReveal(View view, int centerX,
             int centerY, float startRadius, float endRadius) {
         Animator anim = ViewAnimationUtils.createCircularReveal(view, centerX,

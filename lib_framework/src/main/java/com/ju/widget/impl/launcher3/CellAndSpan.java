@@ -1,4 +1,4 @@
-package com.ju.widget.impl;
+package com.ju.widget.impl.launcher3;
 
 /**
  * @Author: liuqunshan@hisense.com

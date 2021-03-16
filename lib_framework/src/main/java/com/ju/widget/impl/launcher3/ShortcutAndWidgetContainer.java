@@ -1,4 +1,4 @@
-package com.ju.widget.impl;
+package com.ju.widget.impl.launcher3;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -8,7 +8,7 @@ import android.graphics.Rect;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class WidgetContainerInner extends ViewGroup {
+public class ShortcutAndWidgetContainer extends ViewGroup {
 
     private static final String TAG = "CellLayoutChildren";
 
@@ -26,7 +26,7 @@ public class WidgetContainerInner extends ViewGroup {
     private int mCountX;
     private int mCountY;
 
-    public WidgetContainerInner(Context context) {
+    public ShortcutAndWidgetContainer(Context context) {
         super(context);
     }
 
@@ -76,15 +76,19 @@ public class WidgetContainerInner extends ViewGroup {
         for (int i = 0; i < count; i++) {
             View child = getChildAt(i);
             if (child.getVisibility() != GONE) {
-                WidgetCellLayout.LayoutParams lp = (WidgetCellLayout.LayoutParams) child.getLayoutParams();
-                lp.setup(mCellWidth, mCellHeight, mWidthGap, mHeightGap);
-
-                int childWidthMeasureSpec = MeasureSpec.makeMeasureSpec(lp.width, MeasureSpec.EXACTLY);
-                int childHeightMeasureSpec = MeasureSpec.makeMeasureSpec(lp.height, MeasureSpec.EXACTLY);
-
-                child.measure(childWidthMeasureSpec, childHeightMeasureSpec);
+                measureChild(child);
             }
         }
+    }
+
+    public void measureChild(View child) {
+        CellLayout.LayoutParams lp = (CellLayout.LayoutParams) child.getLayoutParams();
+        lp.setup(mCellWidth, mCellHeight, mWidthGap, mHeightGap);
+
+        int childWidthMeasureSpec = MeasureSpec.makeMeasureSpec(lp.width, MeasureSpec.EXACTLY);
+        int childHeightMeasureSpec = MeasureSpec.makeMeasureSpec(lp.height, MeasureSpec.EXACTLY);
+
+        child.measure(childWidthMeasureSpec, childHeightMeasureSpec);
     }
 
     @Override
@@ -93,7 +97,7 @@ public class WidgetContainerInner extends ViewGroup {
         for (int i = 0; i < count; i++) {
             final View child = getChildAt(i);
             if (child.getVisibility() != GONE) {
-                WidgetCellLayout.LayoutParams lp = (WidgetCellLayout.LayoutParams) child.getLayoutParams();
+                CellLayout.LayoutParams lp = (CellLayout.LayoutParams) child.getLayoutParams();
                 int childLeft = lp.x;
                 int childTop = lp.y;
                 child.layout(childLeft, childTop, childLeft + lp.width, childTop + lp.height);
@@ -149,7 +153,7 @@ public class WidgetContainerInner extends ViewGroup {
         final int count = getChildCount();
         for (int i = 0; i < count; i++) {
             View child = getChildAt(i);
-            WidgetCellLayout.LayoutParams lp = (WidgetCellLayout.LayoutParams) child.getLayoutParams();
+            CellLayout.LayoutParams lp = (CellLayout.LayoutParams) child.getLayoutParams();
 
             if ((lp.cellX <= x) && (x < lp.cellX + lp.cellHSpan)
                     && (lp.cellY <= y) && (y < lp.cellY + lp.cellVSpan)) {
@@ -159,12 +163,12 @@ public class WidgetContainerInner extends ViewGroup {
         return null;
     }
 
-    void setupLayoutParams(WidgetCellLayout.LayoutParams lp) {
+    void setupLayoutParams(CellLayout.LayoutParams lp) {
         lp.setup(mCellWidth, mCellHeight, mWidthGap, mHeightGap);
     }
 
     void setupLayoutParams(View child) {
-        WidgetCellLayout.LayoutParams lp = (WidgetCellLayout.LayoutParams) child.getLayoutParams();
+        CellLayout.LayoutParams lp = (CellLayout.LayoutParams) child.getLayoutParams();
         lp.setup(mCellWidth, mCellHeight, mWidthGap, mHeightGap);
     }
 

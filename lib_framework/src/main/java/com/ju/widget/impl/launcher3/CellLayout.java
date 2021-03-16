@@ -1,4 +1,4 @@
-package com.ju.widget.impl;
+package com.ju.widget.impl.launcher3;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -19,7 +19,7 @@ import android.view.animation.LayoutAnimationController;
 import android.widget.FrameLayout;
 
 import com.ju.widget.api.Config;
-import com.ju.widget.util.AnimUtils;
+import com.ju.widget.impl.launcher3.util.AnimUtils;
 import com.ju.widget.util.Log;
 
 import java.util.ArrayList;
@@ -32,7 +32,7 @@ import java.util.Stack;
  * @Date: 2021/3/15
  * @Description:
  */
-public class WidgetCellLayout extends ViewGroup {
+public class CellLayout extends ViewGroup {
 
     private static final String TAG = "WidgetCellLayout";
 
@@ -71,18 +71,18 @@ public class WidgetCellLayout extends ViewGroup {
 
     private float mReorderPreviewAnimationMagnitude = REORDER_PREVIEW_MAGNITUDE * 160;
 
-    protected WidgetContainerInner mWidgetContainerInner;
+    protected ShortcutAndWidgetContainer mWidgetContainerInner;
     private OnTouchListener mInterceptTouchListener;
 
-    public WidgetCellLayout(Context context) {
+    public CellLayout(Context context) {
         this(context, null);
     }
 
-    public WidgetCellLayout(Context context, AttributeSet attrs) {
+    public CellLayout(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public WidgetCellLayout(Context context, AttributeSet attrs, int defStyle) {
+    public CellLayout(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
         // A ViewGroup usually does not draw, but CellLayout needs to draw a rectangle to show
@@ -94,8 +94,10 @@ public class WidgetCellLayout extends ViewGroup {
 
         mDragCell[0] = mDragCell[1] = -1;
 
-        mWidgetContainerInner = new WidgetContainerInner(context);
+        mWidgetContainerInner = new ShortcutAndWidgetContainer(context);
         addView(mWidgetContainerInner);
+
+//        Launcher.attachCellLayout(context, this);
     }
 
     @Override
@@ -123,7 +125,7 @@ public class WidgetCellLayout extends ViewGroup {
         int childWidthMeasureSpec = MeasureSpec.makeMeasureSpec(childWidthSize, MeasureSpec.EXACTLY);
         int childHeightMeasureSpec = MeasureSpec.makeMeasureSpec(childHeightSize, MeasureSpec.EXACTLY);
 
-        final WidgetContainerInner child = mWidgetContainerInner;
+        final ShortcutAndWidgetContainer child = mWidgetContainerInner;
         child.setCellDimensions(config.mCellWidth, config.mCellHeight,
                 config.mCellCountX, config.mCellCountY,
                 config.mCellGapX, config.mCellGapY);
@@ -402,7 +404,7 @@ public class WidgetCellLayout extends ViewGroup {
         return 1.0f;
     }
 
-    public WidgetContainerInner getShortcutsAndWidgets() {
+    public ShortcutAndWidgetContainer getShortcutsAndWidgets() {
         return mWidgetContainerInner;
     }
 
@@ -412,7 +414,7 @@ public class WidgetCellLayout extends ViewGroup {
 
     public boolean animateChildToPosition(final View child, int cellX, int cellY, int duration,
             int delay, boolean permanent, boolean adjustOccupied) {
-        WidgetContainerInner clc = getShortcutsAndWidgets();
+        ShortcutAndWidgetContainer clc = getShortcutsAndWidgets();
 
         if (clc.indexOfChild(child) != -1) {
             final LayoutParams lp = (LayoutParams) child.getLayoutParams();
@@ -1640,7 +1642,7 @@ public class WidgetCellLayout extends ViewGroup {
                     AnimUtils.ofFloat(child, "translationY", 0f)
             );
             s.setDuration(REORDER_ANIMATION_DURATION);
-            s.setInterpolator(new android.view.animation.DecelerateInterpolator(1.5f));
+            s.setInterpolator(Interpolators.DEACCEL_1_5);
             s.start();
         }
     }
@@ -2130,17 +2132,17 @@ public class WidgetCellLayout extends ViewGroup {
 
     @Override
     public ViewGroup.LayoutParams generateLayoutParams(AttributeSet attrs) {
-        return new WidgetCellLayout.LayoutParams(getContext(), attrs);
+        return new CellLayout.LayoutParams(getContext(), attrs);
     }
 
     @Override
     protected boolean checkLayoutParams(ViewGroup.LayoutParams p) {
-        return p instanceof WidgetCellLayout.LayoutParams;
+        return p instanceof CellLayout.LayoutParams;
     }
 
     @Override
     protected ViewGroup.LayoutParams generateLayoutParams(ViewGroup.LayoutParams p) {
-        return new WidgetCellLayout.LayoutParams(p);
+        return new CellLayout.LayoutParams(p);
     }
 
     public static class CellLayoutAnimationController extends LayoutAnimationController {
@@ -2213,12 +2215,12 @@ public class WidgetCellLayout extends ViewGroup {
 
         // X coordinate of the view in the layout.
         @ViewDebug.ExportedProperty
-        int x;
+        public int x;
         // Y coordinate of the view in the layout.
         @ViewDebug.ExportedProperty
-        int y;
+        public int y;
 
-        boolean dropped;
+        public boolean dropped;
 
         public LayoutParams(Context c, AttributeSet attrs) {
             super(c, attrs);

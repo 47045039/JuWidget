@@ -1,11 +1,15 @@
-package com.ju.widget.util;
+package com.ju.widget.impl.launcher3.util;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
+import android.annotation.TargetApi;
+import android.os.Build;
 import android.view.View;
 import android.view.ViewPropertyAnimator;
 import android.view.ViewTreeObserver;
+
+import com.ju.widget.util.Log;
 
 public class FirstFrameAnimHelper extends AnimatorListenerAdapter implements ValueAnimator.AnimatorUpdateListener {
 
@@ -45,6 +49,7 @@ public class FirstFrameAnimHelper extends AnimatorListenerAdapter implements Val
         sVisible = visible;
     }
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public static void initializeDrawListener(View view) {
         if (sGlobalDrawListener != null) {
             view.getViewTreeObserver().removeOnDrawListener(sGlobalDrawListener);
