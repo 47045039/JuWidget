@@ -61,6 +61,14 @@ public class Tools {
         return new Handler(sWorker.getLooper());
     }
 
+    public static final Handler getWorkHandler() {
+        return sWorkHandler;
+    }
+
+    public static final Looper getWorkLooper() {
+        return sWorker.getLooper();
+    }
+
     public static final boolean isHorizontal(int orientation) {
         return (orientation & ORIENTATION_H) == ORIENTATION_H;
     }
