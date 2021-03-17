@@ -25,7 +25,6 @@ import android.view.VelocityTracker;
 import android.view.ViewConfiguration;
 
 import com.ju.widget.R;
-import com.ju.widget.impl.launcher3.util.FlingAnimation;
 
 /**
  * Utility class to manage fling to delete action during drag and drop.
@@ -94,7 +93,7 @@ public class FlingToDeleteHelper {
         if (vel == null) {
             return null;
         }
-        return new FlingAnimation(dragObject, vel, mDropTarget, mLauncher);
+        return null;//new FlingAnimation(dragObject, vel, mDropTarget, mLauncher);
     }
 
     /**
@@ -111,7 +110,7 @@ public class FlingToDeleteHelper {
             // Do a quick dot product test to ensure that we are flinging upwards
             PointF upVec = new PointF(0f, -1f);
             theta = getAngleBetweenVectors(vel, upVec);
-        } else if (Launcher.isVerticalBarLayout(mLauncher) &&
+        } else if (DragContext.isVerticalBarLayout(mLauncher) &&
                 mVelocityTracker.getXVelocity() < mFlingToDeleteThresholdVelocity) {
             // Remove icon is on left side instead of top, so check if we are flinging to the left.
             PointF leftVec = new PointF(-1f, 0f);

@@ -56,19 +56,13 @@ public interface DropTarget {
         /** Where the drag originated */
         public DragSource dragSource = null;
 
-        /** The object is part of an accessible drag operation */
-        public boolean accessibleDrag;
-
         /** Indicates that the drag operation was cancelled */
         public boolean cancelled = false;
 
         /** Defers removing the DragView from the DragLayer until after the drop animation. */
         public boolean deferDragViewCleanupPostAnimation = true;
 
-//        public DragViewStateAnnouncer stateAnnouncer;
-
-        public DragObject() {
-        }
+        public DragObject() {}
 
         /**
          * This is used to compute the visual center of the dragView. This point is then
@@ -111,7 +105,7 @@ public interface DropTarget {
      * If the drop was cancelled for some reason, onDrop will never get called, the UI will
      * automatically exit out of this mode.
      */
-    void onDrop(DragObject dragObject, DragOptions options);
+    void onDrop(DragObject dragObject);
 
     void onDragEnter(DragObject dragObject);
 

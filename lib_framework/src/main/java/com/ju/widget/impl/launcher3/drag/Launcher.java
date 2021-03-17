@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.util.ArrayMap;
 
 import com.ju.widget.impl.launcher3.CellLayout;
-import com.ju.widget.impl.launcher3.drag.DragLayer;
 
 /**
  * @Author: liuqunshan@hisense.com
@@ -37,33 +36,11 @@ public class Launcher {
 
         @Override
         public void onActivityDestroyed(Activity activity) {
-            detachDragLayer(activity);
             detachCellLayout(activity);
         }
     };
 
-    private static final ArrayMap<Context, DragLayer> sDragLayerCaches = new ArrayMap<>();
     private static final ArrayMap<Context, CellLayout> sCellLayoutCaches = new ArrayMap<>();
-
-    public static boolean attachDragLayer(Context context, DragLayer layout) {
-        if (sDragLayerCaches.containsKey(context)) {
-            return false;
-        } else {
-            sDragLayerCaches.put(context, layout);
-            return true;
-        }
-    }
-
-    public static boolean detachDragLayer(Context context) {
-        if (sDragLayerCaches.containsKey(context)) {
-            sDragLayerCaches.remove(context);
-        }
-        return true;
-    }
-
-    public static final DragLayer getDragLayer(Context context) {
-        return sDragLayerCaches.get(context);
-    }
 
     public static boolean attachCellLayout(Context context, CellLayout layout) {
         if (sCellLayoutCaches.containsKey(context)) {

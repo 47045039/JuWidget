@@ -40,13 +40,6 @@ public class CellLayout extends ViewGroup {
     private static final int REORDER_ANIMATION_DURATION = 150;
 
     private static final boolean DESTRUCTIVE_REORDER = false;
-    private static final boolean DEBUG_VISUALIZE_OCCUPIED = false;
-
-    public static final int MODE_SHOW_REORDER_HINT = 0;
-    public static final int MODE_DRAG_OVER = 1;
-    public static final int MODE_ON_DROP = 2;
-    public static final int MODE_ON_DROP_EXTERNAL = 3;
-    public static final int MODE_ACCEPT_DROP = 4;
 
     private final ArrayMap<LayoutParams, Animator> mReorderAnimators = new ArrayMap<>();
     private final ArrayMap<View, ReorderPreviewAnimation> mShakeAnimators = new ArrayMap<>();
@@ -95,7 +88,7 @@ public class CellLayout extends ViewGroup {
         mDragCell[0] = mDragCell[1] = -1;
 
         mWidgetContainerInner = new ShortcutAndWidgetContainer(context);
-        addView(mWidgetContainerInner);
+        super.addView(mWidgetContainerInner);
 
 //        Launcher.attachCellLayout(context, this);
     }
@@ -191,6 +184,10 @@ public class CellLayout extends ViewGroup {
 
     @Override
     public void removeView(View view) {
+        if (view.getParent() == this) {
+            super.removeView(view);
+            return;
+        }
         markCellsAsUnoccupiedForView(view);
         mWidgetContainerInner.removeView(view);
     }
@@ -203,6 +200,11 @@ public class CellLayout extends ViewGroup {
 
     @Override
     public void removeViewInLayout(View view) {
+        if (view.getParent() == this) {
+            super.removeView(view);
+            return;
+        }
+
         markCellsAsUnoccupiedForView(view);
         mWidgetContainerInner.removeViewInLayout(view);
     }
@@ -224,6 +226,10 @@ public class CellLayout extends ViewGroup {
     }
 
     public void removeViewWithoutMarkingCells(View view) {
+        if (view.getParent() == this) {
+            super.removeView(view);
+            return;
+        }
         mWidgetContainerInner.removeView(view);
     }
 
@@ -2160,13 +2166,11 @@ public class CellLayout extends ViewGroup {
         /**
          * Horizontal location of the item in the grid.
          */
-        @ViewDebug.ExportedProperty
         public int cellX;
 
         /**
          * Vertical location of the item in the grid.
          */
-        @ViewDebug.ExportedProperty
         public int cellY;
 
         /**
@@ -2187,13 +2191,11 @@ public class CellLayout extends ViewGroup {
         /**
          * Number of cells spanned horizontally by the item.
          */
-        @ViewDebug.ExportedProperty
         public int cellHSpan;
 
         /**
          * Number of cells spanned vertically by the item.
          */
-        @ViewDebug.ExportedProperty
         public int cellVSpan;
 
         /**
@@ -2203,29 +2205,29 @@ public class CellLayout extends ViewGroup {
         public boolean isLockedToGrid = true;
 
         /**
-         * Indicates that this item should use the full extents of its parent.
-         */
-        public boolean isFullscreen = false;
-
-        /**
          * Indicates whether this item can be reordered. Always true except in the case of the
          * the AllApps button.
          */
         public boolean canReorder = true;
 
         // X coordinate of the view in the layout.
-        @ViewDebug.ExportedProperty
         public int x;
         // Y coordinate of the view in the layout.
-        @ViewDebug.ExportedProperty
         public int y;
 
         public boolean dropped;
+
+        public boolean customPosition;
 
         public LayoutParams(Context c, AttributeSet attrs) {
             super(c, attrs);
             cellHSpan = 1;
             cellVSpan = 1;
+        }
+
+        public LayoutParams(int width, int height) {
+            super(width, height);
+            customPosition = true;
         }
 
         public LayoutParams(ViewGroup.LayoutParams source) {

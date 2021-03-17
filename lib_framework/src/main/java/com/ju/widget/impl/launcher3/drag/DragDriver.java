@@ -1,23 +1,6 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.ju.widget.impl.launcher3.drag;
 
 import android.content.Context;
-import android.os.Build;
 import android.view.DragEvent;
 import android.view.MotionEvent;
 
@@ -81,17 +64,14 @@ public abstract class DragDriver {
         return true;
     }
 
-    public static DragDriver create(Context context, DragController dragController,
-            DragObject dragObject, DragOptions options) {
-        if (Utilities.ATLEAST_NOUGAT && options.systemDndStartPoint != null) {
+    public static DragDriver create(Context context, DragController dragController, DragObject dragObject) {
+        if (Utilities.ATLEAST_NOUGAT) {
             return new SystemDragDriver(dragController, context, dragObject);
         } else {
             return new InternalDragDriver(dragController);
         }
     }
 
-    public static final boolean ATLEAST_NOUGAT =
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.N;
 }
 
 /**
@@ -117,7 +97,7 @@ class SystemDragDriver extends DragDriver {
     }
 
     @Override
-    public boolean onDragEvent (DragEvent event) {
+    public boolean onDragEvent(DragEvent event) {
         final int action = event.getAction();
 
         switch (action) {
