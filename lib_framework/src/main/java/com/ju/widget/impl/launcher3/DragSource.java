@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.ju.widget.impl.launcher3.drag;
+package com.ju.widget.impl.launcher3;
 
 import android.view.View;
 

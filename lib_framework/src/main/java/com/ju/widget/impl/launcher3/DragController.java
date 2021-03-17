@@ -1,4 +1,4 @@
-package com.ju.widget.impl.launcher3.drag;
+package com.ju.widget.impl.launcher3;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -11,7 +11,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.ju.widget.impl.launcher3.ItemInfo;
 import com.ju.widget.impl.launcher3.util.TouchController;
 import com.ju.widget.impl.launcher3.util.UiThreadHelper;
 

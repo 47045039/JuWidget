@@ -1,4 +1,4 @@
-package com.ju.widget.impl.launcher3.drag;
+package com.ju.widget.impl.launcher3;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -12,8 +12,6 @@ import android.graphics.Rect;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.ju.widget.impl.launcher3.ItemInfo;
-import com.ju.widget.impl.launcher3.Utilities;
 import com.ju.widget.impl.launcher3.util.AnimUtils;
 
 public class DragView extends View {

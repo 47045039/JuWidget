@@ -1,10 +1,10 @@
-package com.ju.widget.impl.launcher3.drag;
+package com.ju.widget.impl.launcher3;
 
 import android.content.Context;
 import android.view.DragEvent;
 import android.view.MotionEvent;
 
-import com.ju.widget.impl.launcher3.drag.DropTarget.DragObject;
+import com.ju.widget.impl.launcher3.DropTarget.DragObject;
 
 /**
  * Base class for driving a drag/drop operation.

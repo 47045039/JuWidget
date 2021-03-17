@@ -12,13 +12,15 @@ import android.util.ArrayMap;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewDebug;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.LayoutAnimationController;
 import android.widget.FrameLayout;
 
 import com.ju.widget.api.Config;
+import com.ju.widget.impl.launcher3.CellAndSpan;
+import com.ju.widget.impl.launcher3.GridOccupancy;
+import com.ju.widget.impl.launcher3.ItemInfo;
 import com.ju.widget.impl.launcher3.util.AnimUtils;
 import com.ju.widget.util.Log;
 

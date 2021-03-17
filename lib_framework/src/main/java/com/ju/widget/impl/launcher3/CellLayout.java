@@ -146,7 +146,8 @@ public class CellLayout extends ViewGroup {
         // First we clear the tag to ensure that on every touch down we start with a fresh slate,
         // even in the case where we return early. Not clearing here was causing bugs whereby on
         // long-press we'd end up picking up an item from a previous drag operation.
-        return mInterceptTouchListener != null && mInterceptTouchListener.onTouch(this, ev);
+        // return mInterceptTouchListener != null && mInterceptTouchListener.onTouch(this, ev);
+        return super.onInterceptTouchEvent(ev);
     }
 
     @Override
@@ -2222,6 +2223,8 @@ public class CellLayout extends ViewGroup {
 
         public boolean dropped;
 
+        public boolean customPosition;
+
         public LayoutParams(Context c, AttributeSet attrs) {
             super(c, attrs);
             cellHSpan = 1;
@@ -2240,6 +2243,11 @@ public class CellLayout extends ViewGroup {
             this.cellY = source.cellY;
             this.cellHSpan = source.cellHSpan;
             this.cellVSpan = source.cellVSpan;
+        }
+
+        public LayoutParams(int width, int height) {
+            super(width, height);
+            customPosition = true;
         }
 
         public LayoutParams(int cellX, int cellY, int cellHSpan, int cellVSpan) {

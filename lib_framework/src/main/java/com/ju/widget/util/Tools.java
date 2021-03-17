@@ -1,9 +1,12 @@
 package com.ju.widget.util;
 
+import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
+import android.view.View;
 
+import static android.view.View.DRAWING_CACHE_QUALITY_HIGH;
 import static com.ju.widget.api.Constants.ORIENTATION_H;
 import static com.ju.widget.api.Constants.ORIENTATION_V;
 
@@ -75,6 +78,29 @@ public class Tools {
 
     public static final boolean isVertical(int orientation) {
         return (orientation & ORIENTATION_V) == ORIENTATION_V;
+    }
+
+    public static Bitmap createBitmapFromView(View view) {
+        if (view == null) {
+            return null;
+        }
+
+        final boolean enable = view.isDrawingCacheEnabled();
+
+        view.setDrawingCacheEnabled(true);
+        view.setDrawingCacheQuality(DRAWING_CACHE_QUALITY_HIGH);
+
+        final Bitmap cache = view.getDrawingCache();
+        Bitmap bitmap = null;
+        if (cache != null && !cache.isRecycled()) {
+            bitmap = Bitmap.createBitmap(cache);
+        }
+
+        if (!enable) {
+            view.destroyDrawingCache();
+            view.setDrawingCacheEnabled(false);
+        }
+        return bitmap;
     }
 
 }

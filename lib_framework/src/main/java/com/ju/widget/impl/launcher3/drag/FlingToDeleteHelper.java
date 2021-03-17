@@ -25,6 +25,7 @@ import android.view.VelocityTracker;
 import android.view.ViewConfiguration;
 
 import com.ju.widget.R;
+import com.ju.widget.impl.launcher3.DropTarget;
 
 /**
  * Utility class to manage fling to delete action during drag and drop.

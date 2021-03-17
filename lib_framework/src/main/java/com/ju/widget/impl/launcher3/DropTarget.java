@@ -14,13 +14,9 @@
  * limitations under the License.
  */
 
-package com.ju.widget.impl.launcher3.drag;
+package com.ju.widget.impl.launcher3;
 
 import android.graphics.Rect;
-
-import com.ju.widget.impl.launcher3.ItemInfo;
-
-//import com.android.launcher3.accessibility.DragViewStateAnnouncer;
 
 /**
  * Interface defining an object that can receive a drag.

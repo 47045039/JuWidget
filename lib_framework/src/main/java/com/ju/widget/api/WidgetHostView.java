@@ -4,6 +4,9 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Point;
 import android.util.AttributeSet;
+import android.view.HapticFeedbackConstants;
+import android.view.SoundEffectConstants;
+import android.view.View;
 import android.widget.FrameLayout;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
@@ -49,6 +52,7 @@ public class WidgetHostView extends FrameLayout {
 
     private void init() {
         setClickable(true);
+        setLongClickable(true);
         setFocusable(true);
         setFocusableInTouchMode(false);
         setDescendantFocusability(FOCUS_BLOCK_DESCENDANTS);
@@ -79,6 +83,7 @@ public class WidgetHostView extends FrameLayout {
     @Override
     public boolean performClick() {
         if (mClickListener != null) {
+            playSoundEffect(SoundEffectConstants.CLICK);
             mClickListener.onHostClick(this, mWidget, mWidgetView);
         }
         return true;
@@ -87,6 +92,7 @@ public class WidgetHostView extends FrameLayout {
     @Override
     public boolean performLongClick() {
         if (mClickListener != null) {
+            performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
             mClickListener.onHostLongClick(this, mWidget, mWidgetView);
         }
         return true;
