@@ -13,8 +13,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.ju.widget.impl.launcher3.util.AnimUtils;
+import com.ju.widget.util.Log;
 
 public class DragView extends View {
+
+    private static final String TAG = "DragView";
 
     public static final int VIEW_ZOOM_DURATION = 150;
 
@@ -22,7 +25,6 @@ public class DragView extends View {
 
     private final int[] mTempLoc = new int[2];
 
-    private final Context mContext;
     private final DragController mDragController;
     private final ViewGroup mRootView;
     private final Bitmap mBitmap;
@@ -51,7 +53,6 @@ public class DragView extends View {
     public DragView(Context context, DragController dc, ViewGroup root, Bitmap bitmap,
             int registrationX, int registrationY, final float initialScale, final float scaleOnDrop) {
         super(context);
-        mContext = context;
         mDragController = dc;
         mRootView = root;
         mBitmap = bitmap;
@@ -163,9 +164,9 @@ public class DragView extends View {
      * @param touchY the y coordinate the user touched in DragLayer coordinates
      */
     public void show(int touchX, int touchY) {
+        setLayoutParams(new CellLayout.LayoutParams(mBitmap.getWidth(), mBitmap.getHeight()));
         mRootView.addView(this);
 
-        setLayoutParams(new CellLayout.LayoutParams(mBitmap.getWidth(), mBitmap.getHeight()));
         move(touchX, touchY);
 
         // Post the animation to skip other expensive work happening on the first frame

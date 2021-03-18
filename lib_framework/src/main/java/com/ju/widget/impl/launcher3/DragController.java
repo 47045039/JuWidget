@@ -4,9 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.os.IBinder;
-import android.view.DragEvent;
 import android.view.HapticFeedbackConstants;
-import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +18,8 @@ import java.util.ArrayList;
  * Class for initiating a drag within a view or across multiple views.
  */
 public class DragController implements DragDriver.EventListener, TouchController {
+
+    private static final String TAG = "DragController";
 
     private static final boolean PROFILE_DRAWING_DURING_DRAG = false;
 
@@ -41,16 +41,11 @@ public class DragController implements DragDriver.EventListener, TouchController
 
     private int mMotionDownX;
     private int mMotionDownY;
-    private int mDistanceSinceScroll = 0;
     private long mLastTouchUpTime = -1;
 
     public DragController(Context context, ViewGroup root) {
         mLauncher = context;
         mRootView = root;
-    }
-
-    public boolean dispatchKeyEvent(KeyEvent event) {
-        return mDragDriver != null;
     }
 
     public boolean isDragging() {
@@ -61,12 +56,13 @@ public class DragController implements DragDriver.EventListener, TouchController
      * 开始拖拽
      *
      * @param bitmap 当前被拖拽的View的图片
-     * @param dragLayerX 当前被拖拽的View的相对于DragLayer的坐标
-     * @param dragLayerY 当前被拖拽的View的相对于DragLayer的坐标
+     * @param dragLayerX 当前被拖拽的View的相对于DragLayer的左上角X坐标
+     * @param dragLayerY 当前被拖拽的View的相对于DragLayer的左上角Y坐标
      * @param source 当前被拖拽的View的父容器
      * @param dragInfo 当前被拖拽的View的信息
      */
-    public DragView startDrag(Bitmap bitmap, int dragLayerX, int dragLayerY, DragSource source, ItemInfo dragInfo) {
+    public DragView startDrag(Bitmap bitmap, int dragLayerX, int dragLayerY,
+            DragSource source, ItemInfo dragInfo) {
         if (PROFILE_DRAWING_DURING_DRAG) {
             android.os.Debug.startMethodTracing("Launcher");
         }
@@ -74,14 +70,8 @@ public class DragController implements DragDriver.EventListener, TouchController
         // Hide soft keyboard, if visible
         UiThreadHelper.hideKeyboardAsync(mLauncher, mWindowToken);
 
-        mMotionDownX = 0;
-        mMotionDownY = 0;
-
         final int registrationX = mMotionDownX - dragLayerX;
         final int registrationY = mMotionDownY - dragLayerY;
-
-        final int dragRegionLeft = 0;
-        final int dragRegionTop = 0;
 
         mLastDropTarget = null;
 
@@ -92,24 +82,22 @@ public class DragController implements DragDriver.EventListener, TouchController
 
         object.dragComplete = false;
         object.dragView = dragView;
-        object.xOffset = mMotionDownX - (dragLayerX + dragRegionLeft);
-        object.yOffset = mMotionDownY - (dragLayerY + dragRegionTop);
+        object.xOffset = mMotionDownX - dragLayerX;
+        object.yOffset = mMotionDownY - dragLayerY;
         object.dragSource = source;
         object.dragInfo = dragInfo;
         object.originalDragInfo = new ItemInfo();
         object.originalDragInfo.copyFrom(dragInfo);
 
         mDragDriver = DragDriver.create(mLauncher, this, mDragObject);
-
         mRootView.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
-
-        dragView.show(mMotionDownX, mMotionDownY);
-        mDistanceSinceScroll = 0;
 
         callOnDragStart();
 
         mLastTouch[0] = mMotionDownX;
         mLastTouch[1] = mMotionDownY;
+
+        dragView.show(mMotionDownX, mMotionDownY);
         handleMoveEvent(mMotionDownX, mMotionDownY);
 
         return dragView;
@@ -159,10 +147,6 @@ public class DragController implements DragDriver.EventListener, TouchController
      * Call this from a drag source view.
      */
     public boolean onControllerInterceptTouchEvent(MotionEvent ev) {
-        if (mDragDriver == null) {
-            return false;
-        }
-
         final int action = ev.getAction();
         final int[] dragLayerPos = getClampedDragLayerPos(ev.getX(), ev.getY());
         final int dragLayerX = dragLayerPos[0];
@@ -186,10 +170,6 @@ public class DragController implements DragDriver.EventListener, TouchController
      * Call this from a drag source view.
      */
     public boolean onControllerTouchEvent(MotionEvent ev) {
-        if (mDragDriver == null) {
-            return false;
-        }
-
         final int action = ev.getAction();
         final int[] dragLayerPos = getClampedDragLayerPos(ev.getX(), ev.getY());
         final int dragLayerX = dragLayerPos[0];
@@ -203,14 +183,7 @@ public class DragController implements DragDriver.EventListener, TouchController
                 break;
         }
 
-        return mDragDriver.onTouchEvent(ev);
-    }
-
-    /**
-     * Call this from a drag source view.
-     */
-    public boolean onDragEvent(long dragStartTime, DragEvent event) {
-        return mDragDriver != null && mDragDriver.onDragEvent(event);
+        return mDragDriver != null && mDragDriver.onTouchEvent(ev);
     }
 
     /**
@@ -232,15 +205,8 @@ public class DragController implements DragDriver.EventListener, TouchController
         mDragObject.y = coordinates[1];
         checkTouchMove(dropTarget);
 
-        // Check if we are hovering over the scroll areas
-        mDistanceSinceScroll += Math.hypot(mLastTouch[0] - x, mLastTouch[1] - y);
         mLastTouch[0] = x;
         mLastTouch[1] = y;
-
-        // 超过32像素时开始拖拽
-        if (mDistanceSinceScroll > 32) {
-            callOnDragStart();
-        }
     }
 
     private void checkTouchMove(DropTarget dropTarget) {
@@ -265,10 +231,6 @@ public class DragController implements DragDriver.EventListener, TouchController
         mTmpPoint[0] = (int) Math.max(mRectTemp.left, Math.min(x, mRectTemp.right - 1));
         mTmpPoint[1] = (int) Math.max(mRectTemp.top, Math.min(y, mRectTemp.bottom - 1));
         return mTmpPoint;
-    }
-
-    public float getDistanceDragged() {
-        return mDistanceSinceScroll;
     }
 
     public void forceTouchMove() {

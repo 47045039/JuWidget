@@ -56,7 +56,7 @@ public interface DropTarget {
         public boolean cancelled = false;
 
         /** Defers removing the DragView from the DragLayer until after the drop animation. */
-        public boolean deferDragViewCleanupPostAnimation = true;
+        public boolean deferDragViewCleanupPostAnimation = false;
 
         public DragObject() {}
 
@@ -81,6 +81,21 @@ public interface DropTarget {
             res[1] = top + dragView.getDragRegion().height() / 2;
 
             return res;
+        }
+
+        @Override
+        public String toString() {
+            final StringBuilder sb = new StringBuilder("DragObject{");
+            sb.append("x=").append(x);
+            sb.append(", y=").append(y);
+            sb.append(", xOffset=").append(xOffset);
+            sb.append(", yOffset=").append(yOffset);
+            sb.append(", dragComplete=").append(dragComplete);
+            sb.append(", dragView=").append(dragView);
+            sb.append(", dragInfo=").append(dragInfo);
+            sb.append(", originalDragInfo=").append(originalDragInfo);
+            sb.append('}');
+            return sb.toString();
         }
     }
 

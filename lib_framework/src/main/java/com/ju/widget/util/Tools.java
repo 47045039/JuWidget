@@ -1,6 +1,7 @@
 package com.ju.widget.util;
 
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
@@ -99,6 +100,20 @@ public class Tools {
         if (!enable) {
             view.destroyDrawingCache();
             view.setDrawingCacheEnabled(false);
+        }
+        return bitmap;
+    }
+
+    public static Bitmap createBitmapFromView2(View view) {
+        if (view == null) {
+            return null;
+        }
+
+        final Bitmap bitmap = Bitmap.createBitmap(view.getWidth(), view.getHeight(), Bitmap.Config.ARGB_8888);
+        if (bitmap != null) {
+            final Canvas canvas = new Canvas(bitmap);
+            view.draw(canvas);
+            canvas.setBitmap(null);
         }
         return bitmap;
     }

@@ -86,15 +86,15 @@ class SystemDragDriver extends DragDriver {
         super(dragController);
     }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent ev) {
-        return false;
-    }
-
-    @Override
-    public boolean onInterceptTouchEvent(MotionEvent ev) {
-        return false;
-    }
+//    @Override
+//    public boolean onTouchEvent(MotionEvent ev) {
+//        return false;
+//    }
+//
+//    @Override
+//    public boolean onInterceptTouchEvent(MotionEvent ev) {
+//        return false;
+//    }
 
     @Override
     public boolean onDragEvent(DragEvent event) {

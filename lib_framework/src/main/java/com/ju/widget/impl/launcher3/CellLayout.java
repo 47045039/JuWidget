@@ -21,6 +21,7 @@ import android.widget.FrameLayout;
 import com.ju.widget.api.Config;
 import com.ju.widget.impl.launcher3.util.AnimUtils;
 import com.ju.widget.util.Log;
+import com.ju.widget.util.Tools;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,21 +33,14 @@ import java.util.Stack;
  * @Date: 2021/3/15
  * @Description:
  */
-public class CellLayout extends ViewGroup {
+public class CellLayout extends ViewGroup implements DragSource, DropTarget, DragController.DragListener {
 
-    private static final String TAG = "WidgetCellLayout";
+    private static final String TAG = "CellLayout";
 
     private static final float REORDER_PREVIEW_MAGNITUDE = 0.12f;
     private static final int REORDER_ANIMATION_DURATION = 150;
 
     private static final boolean DESTRUCTIVE_REORDER = false;
-    private static final boolean DEBUG_VISUALIZE_OCCUPIED = false;
-
-    public static final int MODE_SHOW_REORDER_HINT = 0;
-    public static final int MODE_DRAG_OVER = 1;
-    public static final int MODE_ON_DROP = 2;
-    public static final int MODE_ON_DROP_EXTERNAL = 3;
-    public static final int MODE_ACCEPT_DROP = 4;
 
     private final ArrayMap<LayoutParams, Animator> mReorderAnimators = new ArrayMap<>();
     private final ArrayMap<View, ReorderPreviewAnimation> mShakeAnimators = new ArrayMap<>();
@@ -55,16 +49,19 @@ public class CellLayout extends ViewGroup {
     private final Stack<Rect> mTempRectStack = new Stack<Rect>();
     private final Config mUsedCellConfig = new Config();
 
-    private final int[] mTmpXY = new int[2];
+    private final Rect mOccupiedRect = new Rect();
+
+    private final float[] mTempCenter = new float[2];
     private final int[] mTmpPoint = new int[2];
     private final int[] mTempLocation = new int[2];
-
     private final int[] mDragCell = new int[2];
+
+    private final DragController mDragController;
+    private View mDragCellView = null;
+    private View mDragView = null;
+
     private boolean mDragging = false;
     private boolean mItemPlacementDirty = false;
-
-    private final Rect mOccupiedRect = new Rect();
-    private final Rect mTempRect = new Rect();
 
     private GridOccupancy mOccupied;
     private GridOccupancy mTmpOccupied;
@@ -72,7 +69,6 @@ public class CellLayout extends ViewGroup {
     private float mReorderPreviewAnimationMagnitude = REORDER_PREVIEW_MAGNITUDE * 160;
 
     protected ShortcutAndWidgetContainer mWidgetContainerInner;
-    private OnTouchListener mInterceptTouchListener;
 
     public CellLayout(Context context) {
         this(context, null);
@@ -94,10 +90,9 @@ public class CellLayout extends ViewGroup {
 
         mDragCell[0] = mDragCell[1] = -1;
 
+        mDragController = new DragController(context, this);
         mWidgetContainerInner = new ShortcutAndWidgetContainer(context);
-        addView(mWidgetContainerInner);
-
-//        Launcher.attachCellLayout(context, this);
+        super.addView(mWidgetContainerInner);
     }
 
     @Override
@@ -131,6 +126,13 @@ public class CellLayout extends ViewGroup {
                 config.mCellGapX, config.mCellGapY);
         child.measure(childWidthMeasureSpec, childHeightMeasureSpec);
 
+        final View dragView = mDragView;
+        if (mDragging && dragView != null) {
+            final LayoutParams params = (LayoutParams) dragView.getLayoutParams();
+            dragView.measure(MeasureSpec.makeMeasureSpec(params.width, MeasureSpec.EXACTLY),
+                    MeasureSpec.makeMeasureSpec(params.height, MeasureSpec.EXACTLY));
+        }
+
         setMeasuredDimension(child.getMeasuredWidth() + getPaddingLeft() + getPaddingRight(),
                 child.getMeasuredHeight() + getPaddingTop() + getPaddingBottom());
     }
@@ -139,15 +141,32 @@ public class CellLayout extends ViewGroup {
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         mWidgetContainerInner.layout(getPaddingLeft(), getPaddingTop(),
                 r - l - getPaddingRight(), b - t - getPaddingBottom());
+
+        final View dragView = mDragView;
+        if (mDragging && dragView != null) {
+            dragView.layout(getPaddingLeft(), getPaddingTop(),
+                    dragView.getMeasuredWidth() + getPaddingLeft(),
+                    dragView.getMeasuredHeight() + getPaddingTop());
+        }
     }
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        // First we clear the tag to ensure that on every touch down we start with a fresh slate,
-        // even in the case where we return early. Not clearing here was causing bugs whereby on
-        // long-press we'd end up picking up an item from a previous drag operation.
-        // return mInterceptTouchListener != null && mInterceptTouchListener.onTouch(this, ev);
-        return super.onInterceptTouchEvent(ev);
+//        if (mDragging) {
+        // FIXME：startDrag时，DragController必须知道当前的touch坐标，所以必须都上报到DragController
+            return mDragController.onControllerInterceptTouchEvent(ev);
+//        } else {
+//            return super.onInterceptTouchEvent(ev);
+//        }
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent ev) {
+        if (mDragging) {
+            return mDragController.onControllerTouchEvent(ev);
+        }
+
+        return super.onTouchEvent(ev);
     }
 
     @Override
@@ -161,19 +180,30 @@ public class CellLayout extends ViewGroup {
         mWidgetContainerInner.setChildrenDrawingCacheEnabled(enabled);
     }
 
-    @Override
-    public int indexOfChild(View child) {
-        return mWidgetContainerInner.indexOfChild(child);
-    }
+//    @Override
+//    public int indexOfChild(View child) {
+//        return mWidgetContainerInner.indexOfChild(child);
+//    }
+//
+//    @Override
+//    public int getChildCount() {
+//        return mWidgetContainerInner.getChildCount();
+//    }
+//
+//    @Override
+//    public View getChildAt(int index) {
+//        return mWidgetContainerInner.getChildAt(index);
+//    }
+
 
     @Override
-    public int getChildCount() {
-        return mWidgetContainerInner.getChildCount();
-    }
-
-    @Override
-    public View getChildAt(int index) {
-        return mWidgetContainerInner.getChildAt(index);
+    public void addView(View child) {
+        final ViewGroup.LayoutParams params = child.getLayoutParams();
+        if (params instanceof LayoutParams && ((LayoutParams) params).customPosition) {
+            super.addView(child, params);
+        } else {
+            throw new IllegalArgumentException("invalid argument: " + child + params);
+        }
     }
 
     @Override
@@ -192,6 +222,11 @@ public class CellLayout extends ViewGroup {
 
     @Override
     public void removeView(View view) {
+        if (view.getParent() == this) {
+            super.removeView(view);
+            return;
+        }
+
         markCellsAsUnoccupiedForView(view);
         mWidgetContainerInner.removeView(view);
     }
@@ -204,6 +239,11 @@ public class CellLayout extends ViewGroup {
 
     @Override
     public void removeViewInLayout(View view) {
+        if (view.getParent() == this) {
+            super.removeViewInLayout(view);
+            return;
+        }
+
         markCellsAsUnoccupiedForView(view);
         mWidgetContainerInner.removeViewInLayout(view);
     }
@@ -228,6 +268,95 @@ public class CellLayout extends ViewGroup {
         mWidgetContainerInner.removeView(view);
     }
 
+    @Override
+    public void onDragStart(DropTarget.DragObject dragObject) {
+        Log.i(TAG, "onDragStart: ", dragObject);
+        // 拖拽流程开始
+        mDragging = true;
+        mDragView = dragObject.dragView;
+    }
+
+    @Override
+    public void onDragEnd() {
+        Log.i(TAG, "onDragEnd: ", mDragCellView);
+        // 拖拽流程全部结束
+
+        mDragging = false;
+        mDragCellView = null;
+        mDragView = null;
+
+        mDragController.removeDropTarget(this);
+        mDragController.removeDragListener(this);
+    }
+
+    @Override
+    public void onDropCompleted(View target, DropTarget.DragObject d, boolean success) {
+        Log.i(TAG, "onDropCompleted: ", success, d.dragView.getParent(), d);
+        // 放置结束，可能找不到合适位置，success = false
+    }
+
+    @Override
+    public boolean isDropEnabled() {
+        // 是否可以放置
+        return true;
+    }
+
+    @Override
+    public void prepareAccessibilityDrop() {
+//        Log.v(TAG, "prepareAccessibilityDrop");
+    }
+
+    @Override
+    public void getHitRectRelativeToDragLayer(Rect outRect) {
+        // CellLayout整体作为DragLayer，所以直接返回CellLayout的边界
+        outRect.set(0, 0, getMeasuredWidth(), getMeasuredHeight());
+    }
+
+    @Override
+    public boolean acceptDrop(DropTarget.DragObject dragObject) {
+//        Log.v(TAG, "acceptDrop: ", dragObject);
+        // TODO：是否可以放在 dragObject.x & dragObject.y 对应的坐标
+        final ItemInfo info = dragObject.dragInfo;
+        return true;
+    }
+
+    @Override
+    public void onDrop(DropTarget.DragObject dragObject) {
+        Log.v(TAG, "onDrop: ", dragObject);
+        // 开始放置
+        final float[] center = mTempCenter;
+        dragObject.getVisualCenter(center);
+
+        final ItemInfo info = dragObject.originalDragInfo;
+        final int[] pos = findNearestArea((int) center[0], (int) center[1],
+                info.spanX, info.spanY, mTempLocation);
+        info.cellX = pos[0];
+        info.cellY = pos[1];
+        mDragCellView.setTag(info);
+
+        final LayoutParams params = new LayoutParams(pos[0], pos[1], info.spanX, info.spanY);
+        removeView(mDragCellView);
+        addViewToCells(mDragCellView, -1, -1, params, true);
+        mDragCellView.setVisibility(VISIBLE);
+    }
+
+    @Override
+    public void onDragEnter(DropTarget.DragObject dragObject) {
+//        Log.v(TAG, "onDragEnter: ", dragObject);
+    }
+
+    @Override
+    public void onDragOver(DropTarget.DragObject dragObject) {
+//        Log.v(TAG, "onDragOver: ", dragObject);
+        // 拖拽动作中
+    }
+
+    @Override
+    public void onDragExit(DropTarget.DragObject dragObject) {
+//        Log.v(TAG, "onDragExit: ", dragObject);
+        // 拖拽动作结束
+    }
+
     /**
      * 设置cell原始配置
      */
@@ -245,8 +374,21 @@ public class CellLayout extends ViewGroup {
         mTmpOccupied = new GridOccupancy(config.mCellCountX, config.mCellCountY);
     }
 
-    protected void setOnInterceptTouchListener(View.OnTouchListener listener) {
-        mInterceptTouchListener = listener;
+    protected void startDrag(View cell) {
+        mDragging = true;
+        mDragCellView = cell;
+        cell.setVisibility(GONE);
+
+        mDragController.addDragListener(this);
+        mDragController.addDropTarget(this);
+
+        final Bitmap bitmap = Tools.createBitmapFromView2(cell);
+        final int[] coordinate = new int[2];
+
+        Utilities.getDescendantCoordRelativeToAncestor(cell, this, coordinate, false);
+        Log.w(TAG, "prepare start drag: ", coordinate[0], coordinate[1], bitmap);
+
+        mDragController.startDrag(bitmap, coordinate[0], coordinate[1], this, (ItemInfo) cell.getTag());
     }
 
     protected boolean addViewToCells(View child, int index, int childId, LayoutParams params, boolean markCells) {

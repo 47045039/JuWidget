@@ -1,33 +1,24 @@
 package com.ju.widget.api;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Point;
 import android.util.AttributeSet;
-import android.view.DragEvent;
-import android.view.MotionEvent;
 import android.view.View;
 
 import com.ju.widget.api.WidgetHostView.WidgetClickListener;
 import com.ju.widget.impl.PopupWindow.OnDismissListener;
 import com.ju.widget.impl.WidgetServer;
 import com.ju.widget.impl.launcher3.CellLayout;
-import com.ju.widget.impl.launcher3.DragController;
-import com.ju.widget.impl.launcher3.DragSource;
-import com.ju.widget.impl.launcher3.DropTarget;
 import com.ju.widget.impl.launcher3.ItemInfo;
-import com.ju.widget.impl.launcher3.Utilities;
 import com.ju.widget.util.Log;
-import com.ju.widget.util.Tools;
 
 /**
  * Widget容器；
  * <p>
  * 需要实现Widget的自动布局、移位、补位、删除等逻辑；
  */
-public class WidgetContainer extends CellLayout implements OnDismissListener, WidgetClickListener,
-        DragSource, DragController.DragListener {
+public class WidgetContainer extends CellLayout implements OnDismissListener, WidgetClickListener {
 
     private static final String TAG = "WidgetContainer";
 
@@ -35,11 +26,8 @@ public class WidgetContainer extends CellLayout implements OnDismissListener, Wi
 
     // 菜单的外层封装
     private WidgetMenuContainer mMenuContainer = null;
-    private DragController mDragController = null;
-    private View mDragView = null;
 
     private boolean mEditMode = false;
-    private boolean mDraging = false;
 
     public WidgetContainer(Context context) {
         this(context, null, 0);
@@ -54,50 +42,8 @@ public class WidgetContainer extends CellLayout implements OnDismissListener, Wi
     }
 
     @Override
-    public boolean onInterceptTouchEvent(MotionEvent ev) {
-        Log.e(TAG, "onInterceptTouchEvent: ", mEditMode, ev);
-        if (isEditMode()) {
-            return mDragController.onControllerInterceptTouchEvent(ev);
-        } else {
-            return super.onInterceptTouchEvent(ev);
-        }
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent ev) {
-        Log.v(TAG, "onTouchEvent: ", mEditMode, mDragView);
-        if (isEditMode()) {
-            return mDragController.onControllerTouchEvent(ev);
-        }
-
-        return super.onTouchEvent(ev);
-    }
-
-    @Override
-    public boolean dispatchDragEvent(DragEvent event) {
-        Log.v(TAG, "dispatchDragEvent: ", mEditMode, mDragView);
-        return super.dispatchDragEvent(event);
-    }
-
-    @Override
-    public boolean onDragEvent(DragEvent event) {
-        Log.v(TAG, "onDragEvent: ", mEditMode, mDragView);
-        return super.onDragEvent(event);
-    }
-
-    @Override
-    public void onDragStart(DropTarget.DragObject dragObject) {
-        Log.w(TAG, "onDragStart: ", dragObject);
-    }
-
-    @Override
-    public void onDragEnd() {
-        Log.w(TAG, "onDragEnd: ");
-    }
-
-    @Override
-    public void onDropCompleted(View target, DropTarget.DragObject d, boolean success) {
-        Log.w(TAG, "onDropCompleted: ", success, target, d);
+    public boolean isDropEnabled() {
+        return mEditMode;   // 编辑模式才可以放置
     }
 
     @Override
@@ -157,20 +103,9 @@ public class WidgetContainer extends CellLayout implements OnDismissListener, Wi
         Log.w(TAG, "onHostLongClick: ", isEditMode(), host);
         if (!isEditMode()) {
             setEditMode(true);
-
-            mDragView = host;
-            if (mDragController == null) {
-                mDragController = new DragController(host.getContext(), WidgetContainer.this);
-            }
-
-            final Bitmap bitmap = Tools.createBitmapFromView(host);
-            final int[] coordinate = new int[2];
-
-            Utilities.getDescendantCoordRelativeToAncestor(host, this, coordinate, false);
-            Log.w(TAG, "prepare start drag: ", coordinate[0], coordinate[1], bitmap);
-
-            mDragController.startDrag(bitmap, coordinate[0], coordinate[1], this, (ItemInfo) host.getTag());
         }
+
+        startDrag(host);
     }
 
     public void setLayoutConfig(Config config) {
