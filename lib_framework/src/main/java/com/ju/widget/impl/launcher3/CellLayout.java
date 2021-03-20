@@ -144,9 +144,7 @@ public class CellLayout extends ViewGroup implements DragSource, DropTarget, Dra
 
         final View dragView = mDragView;
         if (mDragging && dragView != null) {
-            dragView.layout(getPaddingLeft(), getPaddingTop(),
-                    dragView.getMeasuredWidth() + getPaddingLeft(),
-                    dragView.getMeasuredHeight() + getPaddingTop());
+            dragView.layout(0, 0, dragView.getMeasuredWidth(), dragView.getMeasuredHeight());
         }
     }
 
