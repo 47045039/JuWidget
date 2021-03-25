@@ -37,7 +37,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         mContainer1 = findViewById(R.id.widget_container_1);
         mContainer2 = findViewById(R.id.widget_container_2);
 
-        mContainer1.setLayoutConfig(new Config(160, 160, 6, 8));
+        mContainer1.setLayoutConfig(new Config());
 
         findViewById(R.id.widget_edit_1).setOnClickListener(this);
         findViewById(R.id.widget_add_1).setOnClickListener(this);

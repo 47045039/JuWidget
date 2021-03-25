@@ -101,21 +101,31 @@ public class CellLayout extends ViewGroup implements DragSource, DropTarget, Dra
         final int heightSpecMode = MeasureSpec.getMode(heightMeasureSpec);
         final int widthSize = MeasureSpec.getSize(widthMeasureSpec);
         final int heightSize =  MeasureSpec.getSize(heightMeasureSpec);
-        final int childWidthSize = widthSize - getPaddingLeft() - getPaddingRight();
-        final int childHeightSize = heightSize - getPaddingTop() - getPaddingBottom();
 
-        final Config config = mUsedCellConfig;
-        final int cellGapX = (childWidthSize - config.mCellWidth * config.mCellCountX) / (config.mCellCountX - 1);
-        final int cellGapY = (childHeightSize - config.mCellHeight * config.mCellCountY) / (config.mCellCountY - 1);
-
-        if (cellGapX < 0 || cellGapY < 0) {
-            Log.e(TAG, "invalid layout: ", widthSize, heightSize, config);
-//            throw new IllegalArgumentException("invalid layout: " + childWidthSize + " " + childWidthSize + " " + config);
+        Log.v(TAG, "measure self: ", widthSize, heightSize,
+                "0x", Integer.toHexString(widthSpecMode),
+                "0x", Integer.toHexString(heightSpecMode));
+        if (widthSize <= 0 || heightSize <= 0) {
             super.onMeasure(widthMeasureSpec, heightMeasureSpec);
             return;
         }
 
-        config.setGap(cellGapX, cellGapY);
+        final Config config = mUsedCellConfig;
+        final int childWidthSize = config.mCellWidth * config.mCellCountX
+                + config.mCellGapX * (config.mCellCountX - 1);
+        final int childHeightSize = config.mCellHeight * config.mCellCountY
+                + config.mCellGapY * (config.mCellCountY - 1);
+
+        Log.v(TAG, "measure child: ", childWidthSize, childHeightSize, config);
+        if (childWidthSize > widthSize || childHeightSize > heightSize) {
+            Log.e(TAG, "invalid config: ", config);
+            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+            return;
+        }
+
+        final int paddingX = (widthSize - childWidthSize) / 2;
+        final int paddingY = (widthSize - childWidthSize) / 2;
+        setPadding(paddingX, paddingY, paddingX, paddingY);
 
         int childWidthMeasureSpec = MeasureSpec.makeMeasureSpec(childWidthSize, MeasureSpec.EXACTLY);
         int childHeightMeasureSpec = MeasureSpec.makeMeasureSpec(childHeightSize, MeasureSpec.EXACTLY);

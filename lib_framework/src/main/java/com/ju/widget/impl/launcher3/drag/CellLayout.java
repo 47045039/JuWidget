@@ -115,8 +115,6 @@ public class CellLayout extends ViewGroup {
             return;
         }
 
-        config.setGap(cellGapX, cellGapY);
-
         int childWidthMeasureSpec = MeasureSpec.makeMeasureSpec(childWidthSize, MeasureSpec.EXACTLY);
         int childHeightMeasureSpec = MeasureSpec.makeMeasureSpec(childHeightSize, MeasureSpec.EXACTLY);
 
