@@ -119,12 +119,19 @@ public class CellLayout extends ViewGroup implements DragSource, DropTarget, Dra
         Log.v(TAG, "measure child: ", childWidthSize, childHeightSize, config);
         if (childWidthSize > widthSize || childHeightSize > heightSize) {
             Log.e(TAG, "invalid config: ", config);
-            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-            return;
+//            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+//            return;
         }
 
-        final int paddingX = (widthSize - childWidthSize) / 2;
-        final int paddingY = (widthSize - childWidthSize) / 2;
+        int paddingX = (widthSize - childWidthSize) / 2;
+        int paddingY = (widthSize - childWidthSize) / 2;
+        if (paddingX < 0) {
+            paddingX = 0;
+        }
+        if (paddingY < 0) {
+            paddingY = 0;
+        }
+
         setPadding(paddingX, paddingY, paddingX, paddingY);
 
         int childWidthMeasureSpec = MeasureSpec.makeMeasureSpec(childWidthSize, MeasureSpec.EXACTLY);
