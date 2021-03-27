@@ -3,6 +3,7 @@ package com.ju.demo.launcher;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ScrollView;
 
 import com.ju.widget.api.Config;
 import com.ju.widget.api.Widget;
@@ -34,10 +35,11 @@ public class MainActivity extends Activity implements View.OnClickListener {
         WidgetEnv.init(getApplicationContext(), getApplicationContext());
 
         setContentView(R.layout.activity_main);
+
         mContainer1 = findViewById(R.id.widget_container_1);
         mContainer2 = findViewById(R.id.widget_container_2);
 
-        mContainer1.setLayoutConfig(new Config());
+        mContainer1.setLayoutConfig(new Config(144, 144, 6, 12, 36, 36));
 
         findViewById(R.id.widget_edit_1).setOnClickListener(this);
         findViewById(R.id.widget_add_1).setOnClickListener(this);

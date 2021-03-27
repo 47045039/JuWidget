@@ -3,102 +3,106 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:orientation="horizontal">
 
-    <LinearLayout
-        android:layout_width="0dp"
+    <ScrollView
+        android:id="@+id/widget_container_scroll_1"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:orientation="vertical">
+        android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-            <Button
-                android:id="@+id/widget_edit_1"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="EDIT" />
+                android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/widget_add_1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="ADD" />
+                <Button
+                    android:id="@+id/widget_edit_1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="EDIT" />
 
-            <Button
-                android:id="@+id/widget_remove_1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="REMOVE" />
+                <Button
+                    android:id="@+id/widget_add_1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="ADD" />
 
-            <Button
-                android:id="@+id/widget_update_1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="UPDATE" />
+                <Button
+                    android:id="@+id/widget_remove_1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="REMOVE" />
+
+                <Button
+                    android:id="@+id/widget_update_1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="UPDATE" />
+            </LinearLayout>
+
+
+            <com.ju.widget.api.WidgetContainer
+                android:id="@+id/widget_container_1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
         </LinearLayout>
+    </ScrollView>
 
-        <com.ju.widget.api.WidgetContainer
-            android:id="@+id/widget_container_1"
-            android:paddingLeft="10px"
-            android:paddingRight="10px"
-            android:paddingTop="50px"
-            android:paddingBottom="50px"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-        <!--app:cellCountX="10"
-        app:cellCountY="10"
-        app:cellWidth="160px"
-        app:cellHeight="160px"-->
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="0dp"
+    <ScrollView
+        android:id="@+id/widget_container_scroll_2"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:orientation="vertical"
+        android:fillViewport="true"
         android:visibility="gone">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-            <Button
-                android:id="@+id/widget_edit_2"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="EDIT" />
+                android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/widget_add_2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="ADD" />
+                <Button
+                    android:id="@+id/widget_edit_2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="EDIT" />
 
-            <Button
-                android:id="@+id/widget_remove_2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="REMOVE" />
+                <Button
+                    android:id="@+id/widget_add_2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="ADD" />
 
-            <Button
-                android:id="@+id/widget_update_2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="UPDATE" />
+                <Button
+                    android:id="@+id/widget_remove_2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="REMOVE" />
+
+                <Button
+                    android:id="@+id/widget_update_2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="UPDATE" />
+            </LinearLayout>
+
+            <com.ju.widget.api.WidgetContainer
+                android:id="@+id/widget_container_2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
         </LinearLayout>
-
-        <com.ju.widget.api.WidgetContainer
-            android:id="@+id/widget_container_2"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-    </LinearLayout>
+    </ScrollView>
 
 
 </LinearLayout>

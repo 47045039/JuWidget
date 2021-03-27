@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 
 import com.ju.widget.impl.launcher3.util.TouchController;
 import com.ju.widget.impl.launcher3.util.UiThreadHelper;
+import com.ju.widget.util.Log;
 
 import java.util.ArrayList;
 
@@ -122,6 +123,7 @@ public class DragController implements DragDriver.EventListener, TouchController
     public void onDriverDragMove(float x, float y) {
         final int[] dragLayerPos = getClampedDragLayerPos(x, y);
         handleMoveEvent(dragLayerPos[0], dragLayerPos[1]);
+        mRootView.requestDisallowInterceptTouchEvent(true);
     }
 
     @Override
@@ -136,11 +138,13 @@ public class DragController implements DragDriver.EventListener, TouchController
     public void onDriverDragEnd(float x, float y) {
         doDrop(findDropTarget((int) x, (int) y, mCoordinatesTemp));
         doDragEnd();
+        mRootView.requestDisallowInterceptTouchEvent(false);
     }
 
     @Override
     public void onDriverDragCancel() {
         doDragCancel();
+        mRootView.requestDisallowInterceptTouchEvent(false);
     }
 
     /**
